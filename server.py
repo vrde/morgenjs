@@ -1,9 +1,12 @@
 import os
+from datetime import datetime, timedelta
+import logging
 
 import tornado.httpserver
 import tornado.websocket
 import tornado.ioloop
 import tornado.web
+import tornado.log
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -11,24 +14,29 @@ from watchdog.events import FileSystemEventHandler
 
 wss = []
 
+
 def ws_send(message):
-    print 'WS:', message
     for ws in wss:
         ws.write_message(message)
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-        print 'new connection'
-        self.write_message("Hello World")
+        ua = self.request.headers.get('User-Agent')
+        ip = self.request.remote_ip
+
+        logging.info('open connection with {} {}'.format(ua, ip))
         if self not in wss:
             wss.append(self)
 
     def on_message(self, message):
-        print 'message received %s' % message
+        logging.debug('received message: {}'.format(message))
 
     def on_close(self):
-        print 'connection closed'
+        ua = self.request.headers.get('User-Agent')
+        ip = self.request.remote_ip
+
+        logging.debug('close connection with {} {}'.format(ua, ip))
         if self in wss:
             wss.remove(self)
 
@@ -55,16 +63,25 @@ def make_application():
 
 
 class FSEventHandler(FileSystemEventHandler):
-    def on_any_event(self, event):
-        ws_send({
-            'event_type'  : event.event_type,
-            'is_directory': event.is_directory,
-            'src_path'    : event.src_path
-        })
+    THRESHOLD = timedelta(seconds=0.5)
+
+    def __init__(self, root):
+        self.root = root
+        self.debounce = {}
+
+    def on_modified(self, event):
+        src = event.src_path
+        now = datetime.now()
+        last = self.debounce.get(src)
+
+        if not last or now - last > self.THRESHOLD:
+            logging.info('firing event for {}'.format(src))
+            ws_send(src[len(self.root):]);
+            self.debounce[src] = now
 
 
 def start_watching(path='.'):
-    handler  = FSEventHandler()
+    handler  = FSEventHandler(os.getcwd())
     observer = Observer()
     observer.schedule(handler, path, recursive=True)
     observer.start()
@@ -75,6 +92,7 @@ def start_watching(path='.'):
 def run_server(application):
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(8888)
+    tornado.log.enable_pretty_logging()
     tornado.ioloop.IOLoop.instance().start()
 
 
