@@ -89,8 +89,8 @@
 
             // if there are some old listeners already binded,
             // remove them
-            if (ctx.element._morgenContext)
-                removeEvents(ctx.element._morgenContext);
+            if (ctx && ctx.element && ctx.element._morgenContext)
+                unload(ctx.element._morgenContext);
 
             // bind the new listeners
             addEvents(ctx);
@@ -101,8 +101,8 @@
 
         unload = function (ctx) {
             ctx = ctx || context;
-            if (!ctx) return;
 
+            if (ctx.cleanup) ctx.cleanup();
             removeEvents(ctx);
         };
 
@@ -120,6 +120,7 @@
             load   : load,
             unload : unload,
             remove : remove,
+            cleanup: null,
             events : null
         };
 
@@ -133,7 +134,9 @@
 
 
 (function (bind) {
-    var reloadScript = function (src) {
+    var reloadScript, controller;
+
+    reloadScript = function (src) {
         var oldElem  = document.querySelector("[src^='" + src + "']"),
             newElem  = document.createElement('script');
 
@@ -143,7 +146,7 @@
        return newElem;
     };
 
-    var controller = function (c) {
+    controller = function (c) {
         var ws, log, onmessage;
 
         ws = new WebSocket("ws://localhost:8888/ws");
@@ -153,7 +156,7 @@
         onmessage = function(evt) {
             var filename = evt.data,
                 root     = window.location.origin,
-                src      = filename, //[root, filename].join(''),
+                src      = filename,
                 elem     = document.querySelector("[src^='" + src + "']");
 
             if (filename == '/templates/index.html')
@@ -167,11 +170,15 @@
             }
         };
 
-
         c.events = {
             '_scope'          : ws,
             'open,close,error': log,
             'message'         : onmessage
+        };
+
+        c.cleanup = function () {
+            if (ws.readyState == ws.OPEN)
+                ws.close();
         };
     };
     
