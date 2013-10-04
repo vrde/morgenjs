@@ -28,7 +28,11 @@
     //            or an array of dict.
     // action  -- can be `add` or `remove`, default is `add`
     manageEvents = function (context, action) {
-        var events, tokens, name, query, callback, scope, objects;
+        var events, tokens,
+            eventNames, query, callback,
+            scope, objects,
+            key,
+            i, j, k;
 
         action = action || 'add';
         events = context.events || {};
@@ -36,25 +40,27 @@
         if (!(events instanceof Array))
             events = [events];
 
-        for (var i = 0; i < events.length; i++) {
+        for (i = 0; i < events.length; i++) {
             scope = events[i]['_scope'];
 
             if (scope && !(scope instanceof Array))
                 scope = [scope];
 
-            for (var key in events[i]) {
+            for (key in events[i]) {
                 if (key == '_scope') continue;
 
-                tokens   = key.split(' ');
-                name     = tokens[0];
-                query    = tokens[1];
-                callback = events[i][key];
+                tokens     = key.split(' ');
+                eventNames = tokens[0].split(',');
+                query      = tokens[1];
+                callback   = events[i][key];
 
                 objects = scope || context.element.querySelectorAll(query);
 
-                for (var j = 0; j < objects.length; j++) {
-                    objects[j][action + 'EventListener'](name, callback);
-                    console.log('[core]', action, name, 'to', objects[j]);
+                for (j = 0; j < objects.length; j++) {
+                    for (k = 0; k < eventNames.length; k++) {
+                        objects[j][action + 'EventListener'](eventNames[k], callback);
+                        console.log('[core]', action, eventNames[k], 'to', objects[j]);
+                    }
                 }
             }
         }
@@ -142,7 +148,7 @@
 
         ws = new WebSocket("ws://localhost:8888/ws");
 
-        log = function (e) { console.log('[core] socket activity:', e); };
+        log = function (e) { console.log('[core] socket activity:', e.type); };
 
         onmessage = function(evt) {
             var filename = evt.data,
@@ -163,11 +169,9 @@
 
 
         c.events = {
-            _scope: ws,
-            open: log,
-            close: log,
-            error: log,
-            message: onmessage
+            '_scope'          : ws,
+            'open,close,error': log,
+            'message'         : onmessage
         };
     };
     
