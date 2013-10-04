@@ -1,54 +1,7 @@
-'use strict';
-
 (function (window) {
 
-    var controller = function (c) {
-        var ws = new WebSocket("ws://localhost:8888/ws");
+    'use strict';
 
-        c.events = {
-                scope: ws,
-                error: ws
-            };
-    };
-
-    var reloadScript = function (src) {
-        var oldElem  = document.querySelector("[src^='" + src + "']"),
-            newElem  = document.createElement('script');
-
-       newElem.src = [src, Math.random()].join('?');
-
-       oldElem.parentNode.replaceChild(newElem, oldElem);
-       return newElem;
-    };
-
-    var ws = new WebSocket("ws://localhost:8888/ws");
-
-    ws.onopen  = function(evt) { console.log("socket opened"); };
-    ws.onclose = function(evt) { console.log("socket closed"); };
-
-    ws.onmessage = function(evt) {
-        var filename = evt.data,
-            root     = window.location.origin,
-            src      = filename, //[root, filename].join(''),
-            elem     = document.querySelector("[src^='" + src + "']");
-
-        if (filename == '/templates/index.html')
-            window.location.reload();
-
-        if (elem) {
-            reloadScript(src);
-            console.log('core: reload', elem.src);
-        } else {
-            console.error('core: cannot find', src);
-        }
-    };
-
-    window.ws = ws;
-
-}) (window);
-
-
-(function (window) {
 
     // TO BE REMOVED:
     var T = {
@@ -72,24 +25,37 @@
     // Add or remove event listeners to a set of objects.
     //
     // events  -- a dict formatted like `{ "<evt_name> <selector>": <function> }`
+    //            or an array of dict.
     // action  -- can be `add` or `remove`, default is `add`
     manageEvents = function (context, action) {
-        var events, tokens, name, query, callback, objects;
+        var events, tokens, name, query, callback, scope, objects;
 
         action = action || 'add';
         events = context.events || {};
 
-        for (var key in events) {
-            tokens   = key.split(' ');
-            name     = tokens[0];
-            query    = tokens[1];
-            callback = events[key];
+        if (!(events instanceof Array))
+            events = [events];
 
-            objects = context.element.querySelectorAll(query);
+        for (var i = 0; i < events.length; i++) {
+            scope = events[i]['_scope'];
 
-            for (var i = 0; i < objects.length; i++) {
-                objects[i][action + 'EventListener'](name, callback);
-                console.log('[core]', action, name, 'to', objects[i]);
+            if (scope && !(scope instanceof Array))
+                scope = [scope];
+
+            for (var key in events[i]) {
+                if (key == '_scope') continue;
+
+                tokens   = key.split(' ');
+                name     = tokens[0];
+                query    = tokens[1];
+                callback = events[i][key];
+
+                objects = scope || context.element.querySelectorAll(query);
+
+                for (var j = 0; j < objects.length; j++) {
+                    objects[j][action + 'EventListener'](name, callback);
+                    console.log('[core]', action, name, 'to', objects[j]);
+                }
             }
         }
     };
@@ -159,7 +125,53 @@
 
 }) (window);
 
-(function (window) {
 
-}) (window);
+(function (bind) {
+    var reloadScript = function (src) {
+        var oldElem  = document.querySelector("[src^='" + src + "']"),
+            newElem  = document.createElement('script');
+
+       newElem.src = [src, Math.random()].join('?');
+
+       oldElem.parentNode.replaceChild(newElem, oldElem);
+       return newElem;
+    };
+
+    var controller = function (c) {
+        var ws, log, onmessage;
+
+        ws = new WebSocket("ws://localhost:8888/ws");
+
+        log = function (e) { console.log('[core] socket activity:', e); };
+
+        onmessage = function(evt) {
+            var filename = evt.data,
+                root     = window.location.origin,
+                src      = filename, //[root, filename].join(''),
+                elem     = document.querySelector("[src^='" + src + "']");
+
+            if (filename == '/templates/index.html')
+                window.location.reload();
+
+            if (elem) {
+                reloadScript(src);
+                console.log('core: reload', elem.src);
+            } else {
+                console.error('core: cannot find', src);
+            }
+        };
+
+
+        c.events = {
+            _scope: ws,
+            open: log,
+            close: log,
+            error: log,
+            message: onmessage
+        };
+    };
+    
+    bind(controller, 'html');
+
+}) (window.bind);
 
