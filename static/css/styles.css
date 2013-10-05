@@ -1,8 +1,5 @@
-@import url(http://fonts.googleapis.com/css?family=Kite+One);
-
-
 body {
-    font-family: 'Kite One', sans-serif;
+    font-family: sans-serif;
 }
 
 .main {
@@ -12,3 +9,8 @@ body {
     border-radius: 3px;
     background-color: tomato;
 }
+
+input {
+    width: 100%;
+}
+
