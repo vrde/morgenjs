@@ -232,7 +232,7 @@
 
     // Register a controller. If the controller has been already registered,
     // register it again and reload all the existing ones.
-    morgen.register = function (controller, name) {
+    morgen.register = function (name, controller) {
 
         // Remember if the controller was already there
         var alreadyThere = name in __morgen.controllers;

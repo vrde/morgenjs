@@ -89,7 +89,7 @@
 
     
     // Register the `ROOT` controller.
-    register(controller, 'ROOT');
+    register('ROOT', controller);
 
 }) (window.morgen.register, window.morgen.load);
 
