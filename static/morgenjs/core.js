@@ -141,15 +141,19 @@
     //   `extras` -- an object with some extra values
     //
     morgen.load = function (name, selector, extras) {
-        var context, element, on, off, remove, innerRender;
+        var context, element, controller, on, off, remove, innerRender;
 
-        element = typeof selector == 'string' ? document.querySelector(selector) : selector;
+        element    = typeof selector == 'string' ? document.querySelector(selector) : selector;
+        controller = __morgen.controllers[name];
+
 
         // Helper function to render a template against data
         innerRender = function (template, data) {
             element.innerHTML = render(template, data);
         };
 
+
+        // Add the events to the context.
         on = function (ctx) {
             ctx = ctx || context;
             if (!ctx) return;
@@ -169,6 +173,8 @@
             ctx.element.__morgenContext = ctx;
         };
 
+
+        // Remove the events from the context.
         off = function (ctx) {
             ctx = ctx || context;
 
@@ -177,6 +183,8 @@
             removeEvents(ctx);
         };
 
+
+        // Remove the Node from the DOM.
         remove = function (ctx) {
             ctx = ctx || context;
             if (!ctx) return;
@@ -185,6 +193,7 @@
             ctx.element.parentNode.removeChild(ctx.element);
         };
 
+        // Initialize the context.
         context = {
             name   : name,
             element: element,
@@ -197,29 +206,45 @@
             events : null
         };
 
-        __morgen.controllers[name](context);
+
+        // Start the controller with the specified context.
+        controller(context);
+
+        // Start listen to the events
         on();
 
-        console.log('[core] loaded new controller for', selector);
+        console.log('[core] loaded new controller', name, 'for', selector);
     };
 
+
+
+    // Reload a controller.
     morgen.reload = function (name) {
         var ctx;
 
         for (var key in __morgen.contexts[name]) {
             ctx = __morgen.contexts[name][key];
-            morgen.bind(name, ctx.element, ctx.extras);
+            morgen.load(name, ctx.element, ctx.extras);
         }
     };
 
+
+
+    // Register a controller. If the controller has been already registered,
+    // register it again and reload all the existing ones.
     morgen.register = function (controller, name) {
+
+        // Remember if the controller was already there
         var alreadyThere = name in __morgen.controllers;
 
+        // Save the new controller in the shared memory
         __morgen.controllers[name] = controller;
 
         if (alreadyThere)
             morgen.reload(name);
         else
+            // If the controller has been registered for the first time
+            // create an empty dict to contain all its contexts
             __morgen.contexts[name] = {};
     };
 
