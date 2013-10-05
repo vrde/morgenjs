@@ -17,6 +17,8 @@
     var render, manageEvents, addEvents, removeEvents;
 
 
+
+    // Super simple templating engine by Andrea di Persio
     render = function (template, context) {
         context = context || {};
         return T[template].replace(/\{\{\s*(\w+)\s*\}\}/g, function(match, key) {
@@ -24,42 +26,87 @@
         });
     };
 
+
+
     // Add or remove event listeners to a set of objects.
     //
-    // events  -- a dict formatted like `{ "<evt_name> <selector>": <function> }`
-    //            or an array of dict.
+    // context -- the context to use
     // action  -- can be `add` or `remove`, default is `add`
+    //
+    // The function is quite long and nested, but not difficult to understand.
     manageEvents = function (context, action) {
-        var events, tokens,
-            eventNames, query, callback,
-            scope, objects,
-            key,
+        var events, tokens, eventNames, query, callback,
+            scope, objects, key,
             i, j, k;
 
+
+        // the action to perform with the events, can be `add`, to add events,
+        // or `remove`, to remove events.
         action = action || 'add';
         events = context.events || {};
 
+        // We can manage arrays of events. If the param `events` is not an
+        // array, we wrap it inside an array. This will be handy later
         if (!(events instanceof Array))
             events = [events];
 
+
+        // Iterate all over the events in our list.
         for (i = 0; i < events.length; i++) {
+
+            // By default, event registration happens on a DOM level, adding
+            // the classic events like `click`, `blur` etc. on a node.
+            //
+            // But sometimes, we need to register events on an object like a
+            // socket, for example. Those kind of objects don't live in a DOM
+            // level, so a simple selector cannot find them.
+            //
+            // This is why the event hash can define a `_scope` to be used to
+            // register events on specific objects, or scopes.
             scope = events[i]['_scope'];
 
+
+            // A scope can be an Array as well.
             if (scope && !(scope instanceof Array))
                 scope = [scope];
 
+            // Now we iterate all over the events defined in the context of the
+            // controller.
             for (key in events[i]) {
+
+                // If we are visiting the keyword we use to define the scope,
+                // skip.
                 if (key == '_scope') continue;
 
+                // Split the key on the space, since the canonical format is
+                // something like: `click a.menu`
                 tokens     = key.split(' ');
+
+                // Take the first half. It contais the name of the events to
+                // bind. The format can be a simple string, such as `click`,
+                // or something more complex, as a list of events.
+                // If you need a list of events, split them with a comma, like:
+                // `click,blur,keydown`.
                 eventNames = tokens[0].split(',');
+
+                // And then, the second half is the string we need to use for
+                // the querySelector. The second half can be omitted, if we
+                // specify a `_scope`.
                 query      = tokens[1];
+
+                // Extract the callback from the hash.
                 callback   = events[i][key];
 
+                // And calculate the objects to which the events are added.
+                // If a `scope` has been defined, use it.
                 objects = scope || context.element.querySelectorAll(query);
 
+                // Attach, or detach, the listener to every object found.
                 for (j = 0; j < objects.length; j++) {
                     for (k = 0; k < eventNames.length; k++) {
+
+                        // `action` can be `add` or `remove`, so we are calling
+                        // the method `addEventListener` or `removeEventListener`
                         objects[j][action + 'EventListener'](eventNames[k], callback);
                         console.log('[core]', action, eventNames[k], 'to', objects[j]);
                     }
@@ -68,19 +115,37 @@
         }
     };
 
+
+
+    // Add events to context
     addEvents = function (context) {
         manageEvents(context);
     };
 
+
+
+    // Remove events to context
     removeEvents = function (context) {
         manageEvents(context, 'remove');
     };
 
+
+
+    // Bind a controller to the DOM, using the optional `extras` object.
+    // Binding a controller will also render it in the DOM.
+    //
+    // Params:
+    //   `name` -- a string containing the name of the controller to be used
+    //   `selector` -- a string to be used with `document.querySelector`, or
+    //                 a DOM Element.
+    //   `extras` -- an object with some extra values
+    //
     morgen.bind = function (name, selector, extras) {
         var context, element, load, unload, remove, innerRender;
 
         element = typeof selector == 'string' ? document.querySelector(selector) : selector;
 
+        // Helper function to render a template against data
         innerRender = function (template, data) {
             element.innerHTML = render(template, data);
         };
