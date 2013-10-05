@@ -1,11 +1,16 @@
 (function (register, load) {
 
-    var tmpl = '<ul data-scope="items"></ul>';
+    var tmpl = '<div><form><input /></form><ul data-scope="items"></ul></div>';
 
     register('list', function (c) {
 
         c.events = {
-            'click a': function (e) { console.log('ciao'); }
+            'click a': function (e) { console.log('ciao'); },
+            'submit form': function (e) {
+                var value = c.$("input").value;
+                c.element.appendChild(load('item', null, { value: value }).element);
+                e.preventDefault();
+            }
         };
 
         c.render(tmpl);
