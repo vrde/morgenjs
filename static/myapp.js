@@ -5,10 +5,10 @@
             'click a': function (e) { console.log('ciao'); }
         };
 
-        c.render('main', { name: c.extras.name.toUpperCase() });
+        c.render('main', { name: c.extras.name.toLowerCase() });
     };
 
     register(controller, 'main');
 
-}) (window.register);
+}) (window.morgen.register);
 

@@ -1,4 +1,4 @@
-(function (window) {
+(function (morgen, __morgen) {
 
     'use strict';
 
@@ -76,7 +76,7 @@
         manageEvents(context, 'remove');
     };
 
-    window.bind = function (name, selector, extras) {
+    morgen.bind = function (name, selector, extras) {
         var context, element, load, unload, remove, innerRender;
 
         element = typeof selector == 'string' ? document.querySelector(selector) : selector;
@@ -91,23 +91,23 @@
 
             // if there are some old listeners already binded,
             // remove them
-            if (ctx && ctx.element && ctx.element._morgenContext)
-                unload(ctx.element._morgenContext);
+            if (ctx && ctx.element && ctx.element.__morgenContext)
+                unload(ctx.element.__morgenContext);
 
             // bind the new listeners
             addEvents(ctx);
 
-            ctx.uid = window.objectSpace.uid++;
-            window.objectSpace[ctx.name][ctx.uid] = ctx;
+            ctx.uid = __morgen.uid++;
+            __morgen.contexts[ctx.name][ctx.uid] = ctx;
 
             // update the current context
-            ctx.element._morgenContext = ctx;
+            ctx.element.__morgenContext = ctx;
         };
 
         unload = function (ctx) {
             ctx = ctx || context;
 
-            delete window.objectSpace[ctx.name][ctx.uid];
+            delete __morgen.contexts[ctx.name][ctx.uid];
             if (ctx.cleanup) ctx.cleanup();
             removeEvents(ctx);
         };
@@ -132,89 +132,32 @@
             events : null
         };
 
-        window.app[name](context);
+        __morgen.controllers[name](context);
         load();
 
         console.log('[core] loaded new controller for', selector);
     };
 
-    window.reload = function (name) {
+    morgen.reload = function (name) {
         var ctx;
 
-        for (var key in window.objectSpace[name]) {
-            ctx = window.objectSpace[name][key];
-            window.bind(name, ctx.element, ctx.extras);
+        for (var key in __morgen.contexts[name]) {
+            ctx = __morgen.contexts[name][key];
+            morgen.bind(name, ctx.element, ctx.extras);
         }
     };
 
-    window.register = function (controller, name) {
-        var alreadyThere = name in window.app;
+    morgen.register = function (controller, name) {
+        var alreadyThere = name in __morgen.controllers;
 
-        window.app[name] = controller;
+        __morgen.controllers[name] = controller;
 
         if (alreadyThere)
-            window.reload(name);
+            morgen.reload(name);
         else
-            window.objectSpace[name] = {};
+            __morgen.contexts[name] = {};
     };
 
-}) (window);
+}) (window.morgen, window.__morgen);
 
-
-(function (register, bind) {
-    var reloadScript, controller;
-
-    reloadScript = function (src) {
-        var oldElem  = document.querySelector("[src^='" + src + "']"),
-            newElem  = document.createElement('script');
-
-       newElem.src = [src, Math.random()].join('?');
-
-       oldElem.parentNode.replaceChild(newElem, oldElem);
-       return newElem;
-    };
-
-    controller = function (c) {
-        var ws, log, onmessage;
-
-        ws = new WebSocket("ws://localhost:8888/ws");
-
-        log = function (e) { console.log('[core] socket activity:', e.type); };
-
-        onmessage = function(evt) {
-            var filename = evt.data,
-                root     = window.location.origin,
-                src      = filename,
-                elem     = document.querySelector("[src^='" + src + "']");
-
-            if (filename == '/templates/index.html')
-                window.location.reload();
-
-            if (elem) {
-                reloadScript(src);
-                console.log('core: reload', elem.src);
-            } else {
-                console.error('core: cannot find', src);
-            }
-        };
-
-        c.events = {
-            '_scope'          : ws,
-            'open,close,error': log,
-            'message'         : onmessage
-        };
-
-        c.cleanup = function () {
-            if (ws.readyState == ws.OPEN)
-                ws.close();
-        };
-    };
-
-    
-    
-    register(controller, 'ROOT');
-
-    bind('ROOT', 'html');
-
-}) (window.register, window.bind);
 

@@ -10,5 +10,5 @@
 
     register(controller, 'list');
 
-}) (window.register);
+}) (window.morgen.register);
 
