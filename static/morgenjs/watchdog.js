@@ -1,4 +1,4 @@
-(function (register, bind) {
+(function (register, load) {
     var reloadScript, controller;
 
     reloadScript = function (src) {
@@ -51,7 +51,7 @@
     
     register(controller, 'ROOT');
 
-    bind('ROOT', 'html');
+    load('ROOT', 'html');
 
-}) (window.morgen.register, window.morgen.bind);
+}) (window.morgen.register, window.morgen.load);
 

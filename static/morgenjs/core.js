@@ -131,8 +131,8 @@
 
 
 
-    // Bind a controller to the DOM, using the optional `extras` object.
-    // Binding a controller will also render it in the DOM.
+    // Load a controller in the DOM, using the optional `extras` object.
+    // Loading a controller will also render it in the DOM.
     //
     // Params:
     //   `name` -- a string containing the name of the controller to be used
@@ -140,8 +140,8 @@
     //                 a DOM Element.
     //   `extras` -- an object with some extra values
     //
-    morgen.bind = function (name, selector, extras) {
-        var context, element, load, unload, remove, innerRender;
+    morgen.load = function (name, selector, extras) {
+        var context, element, on, off, remove, innerRender;
 
         element = typeof selector == 'string' ? document.querySelector(selector) : selector;
 
@@ -150,14 +150,14 @@
             element.innerHTML = render(template, data);
         };
 
-        load = function (ctx) {
+        on = function (ctx) {
             ctx = ctx || context;
             if (!ctx) return;
 
             // if there are some old listeners already binded,
             // remove them
             if (ctx && ctx.element && ctx.element.__morgenContext)
-                unload(ctx.element.__morgenContext);
+                off(ctx.element.__morgenContext);
 
             // bind the new listeners
             addEvents(ctx);
@@ -169,7 +169,7 @@
             ctx.element.__morgenContext = ctx;
         };
 
-        unload = function (ctx) {
+        off = function (ctx) {
             ctx = ctx || context;
 
             delete __morgen.contexts[ctx.name][ctx.uid];
@@ -181,7 +181,7 @@
             ctx = ctx || context;
             if (!ctx) return;
 
-            unload(ctx);
+            off(ctx);
             ctx.element.parentNode.removeChild(ctx.element);
         };
 
@@ -189,8 +189,8 @@
             name   : name,
             element: element,
             render : innerRender,
-            load   : load,
-            unload : unload,
+            on     : on,
+            off    : off,
             remove : remove,
             extras : extras,
             cleanup: null,
@@ -198,7 +198,7 @@
         };
 
         __morgen.controllers[name](context);
-        load();
+        on();
 
         console.log('[core] loaded new controller for', selector);
     };
