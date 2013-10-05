@@ -3,16 +3,6 @@
     'use strict';
 
 
-    // TO BE REMOVED:
-    var T = {
-        main: '<div><h1>Hello, {{name}}!</h1><div data-view="list"></div></div>',
-        list: '<ul></ul>',
-        listitem: '<li><a href="{{url}}">{{title}}</a></li>',
-        cat : '<p>Space <a href="#">cat</a></p>'
-    };
-
-
-
     // define what we need in this anon func
     var render, manageEvents, addEvents, removeEvents;
 
@@ -21,7 +11,7 @@
     // Super simple templating engine by Andrea di Persio
     render = function (template, context) {
         context = context || {};
-        return T[template].replace(/\{\{\s*(\w+)\s*\}\}/g, function(match, key) {
+        return template.replace(/\{\{\s*(\w+)\s*\}\}/g, function(match, key) {
             return context[key];
         });
     };
@@ -145,6 +135,10 @@
 
         element    = typeof selector == 'string' ? document.querySelector(selector) : selector;
         controller = __morgen.controllers[name];
+
+
+        if (!controller)
+            throw "`" + name + "`" + " is not registered in the morgen scope!";
 
 
         // Helper function to render a template against data

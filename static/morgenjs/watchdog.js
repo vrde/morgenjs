@@ -13,11 +13,15 @@
 
     // Handy function to reload a script tag.
     reloadScript = function (src) {
-        var oldElem  = document.querySelector("[src^='" + src + "']"),
-            newElem  = document.createElement('script');
+        var attr    = src.match(/\.js$/) ? 'src' : 'href',
+            tag     = attr == 'src' ? 'script' : 'link',
+            oldElem = document.querySelector('[' + attr + '^="' + src + '"]'),
+            newElem = document.createElement(tag);
 
         // Add a cache buster to reload the new data.
-        newElem.src = [src, Math.random()].join('?');
+        newElem[attr] = [src, Math.random()].join('?');
+        newElem.rel   = oldElem.rel;
+        newElem.type  = oldElem.type;
 
         // Replace the old node with the new one
         oldElem.parentNode.replaceChild(newElem, oldElem);
@@ -41,7 +45,9 @@
         onmessage = function(evt) {
             var filename = evt.data,
                 src      = filename,
-                elem     = document.querySelector("[src^='" + src + "']");
+                attr     = src.match(/\.js$/) ? 'src' : 'href',
+                tag      = attr == 'src' ? 'script' : 'link',
+                elem     = document.querySelector('[' + attr + '^="' + src + '"]');
 
             // Still hardcoded, will be better one day.
             // If the index has changed, reload everything.
@@ -52,7 +58,7 @@
             // file that changed, reload the file.
             if (elem) {
                 reloadScript(src);
-                console.log('[core] reload', elem.src);
+                console.log('[core] reload', elem[attr]);
             } else {
                 console.error('[core] cannot find', src);
             }
