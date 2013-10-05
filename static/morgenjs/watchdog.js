@@ -96,8 +96,8 @@
     };
 
     
-    // Register the `ROOT` controller.
-    register('ROOT', controller);
+    // Register the `__morgen_watchdog` controller.
+    register('__morgen_watchdog', controller);
 
 }) (window.morgen.register, window.morgen.load);
 

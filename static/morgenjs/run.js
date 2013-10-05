@@ -3,9 +3,13 @@
     'use strict';
 
 
-    // Load root controller, and start watching
+    // Load the watchdog controller, and start watching
     // the FS change! :)
-    load('ROOT');
+    load('__morgen_watchdog');
+
+
+    // Load the history controller
+    load('__morgen_history');
 
 }) (window.morgen.load);
 

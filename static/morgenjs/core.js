@@ -40,6 +40,9 @@
         if (!(events instanceof Array))
             events = [events];
 
+        // Push global events!
+        events.push(__morgen.events);
+
 
         // Iterate all over the events in our list.
         for (i = 0; i < events.length; i++) {

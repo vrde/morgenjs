@@ -1,6 +1,6 @@
 (function (register) {
 
-    var tmpl = '<li><a href="/item/{{value}}">{{value}}</a> <button class="edit">Edit</button><button class="remove">Remove</button></li>';
+    var tmpl = '<li><a href="/item/{{value}}" data-push>{{value}}</a> <button class="edit">Edit</button><button class="remove">Remove</button></li>';
 
     register('item', function (c) {
 
