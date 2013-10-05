@@ -34,7 +34,7 @@
     controller = function (c) {
         var ws, log, onmessage;
 
-        ws = new WebSocket("ws://localhost:8888/ws");
+        ws = new WebSocket('ws://' + window.location.host + '/ws');
 
 
         // Nice generic function to log some events
@@ -70,14 +70,16 @@
 
             // Hey, look, we are using the `_scope` keyword to register
             // events on a specific object!
-            '_scope'          : ws,
+            '_scope': ws,
 
             // Here we are registering multiple events using a single
             // callback.
-            'open,close,error': log,
+            'open,close': log,
+
+            'error': function (e) { alert('error opening websocket ' + e.type); },
 
             // And here the main callback.
-            'message'         : onmessage
+            'message': onmessage
         };
 
         // If we reload this controller, we need to do some manual

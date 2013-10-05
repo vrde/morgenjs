@@ -16,7 +16,7 @@
         c.render(tmpl);
 
         for (var i = 0; i < 5; i++)
-            c.element.appendChild(load('item', null, { value: i }).element);
+            c.element.appendChild(load('item', null, { value: 'item number ' + i }).element);
     });
 
 
