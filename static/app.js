@@ -5,7 +5,9 @@
 
     // TO BE REMOVED:
     var T = {
-        main: '<div><h1>Hello, {{name}}!</h1></div>',
+        main: '<div><h1>Hello, {{name}}!</h1><div data-view="list"></div></div>',
+        list: '<ul></ul>',
+        listitem: '<li><a href="{{url}}">{{title}}</a></li>',
         cat : '<p>Space <a href="#">cat</a></p>'
     };
 
@@ -74,7 +76,7 @@
         manageEvents(context, 'remove');
     };
 
-    window.bind = function (controller, selector) {
+    window.bind = function (name, selector, extras) {
         var context, element, load, unload, remove, innerRender;
 
         element = typeof selector == 'string' ? document.querySelector(selector) : selector;
@@ -95,13 +97,17 @@
             // bind the new listeners
             addEvents(ctx);
 
+            ctx.uid = window.objectSpace.uid++;
+            window.objectSpace[ctx.name][ctx.uid] = ctx;
+
             // update the current context
-            ctx.element._morgenContext = context;
+            ctx.element._morgenContext = ctx;
         };
 
         unload = function (ctx) {
             ctx = ctx || context;
 
+            delete window.objectSpace[ctx.name][ctx.uid];
             if (ctx.cleanup) ctx.cleanup();
             removeEvents(ctx);
         };
@@ -115,25 +121,47 @@
         };
 
         context = {
+            name   : name,
             element: element,
             render : innerRender,
             load   : load,
             unload : unload,
             remove : remove,
+            extras : extras,
             cleanup: null,
             events : null
         };
 
-        controller(context);
+        window.app[name](context);
         load();
 
         console.log('[core] loaded new controller for', selector);
     };
 
+    window.reload = function (name) {
+        var ctx;
+
+        for (var key in window.objectSpace[name]) {
+            ctx = window.objectSpace[name][key];
+            window.bind(name, ctx.element, ctx.extras);
+        }
+    };
+
+    window.register = function (controller, name) {
+        var alreadyThere = name in window.app;
+
+        window.app[name] = controller;
+
+        if (alreadyThere)
+            window.reload(name);
+        else
+            window.objectSpace[name] = {};
+    };
+
 }) (window);
 
 
-(function (bind) {
+(function (register, bind) {
     var reloadScript, controller;
 
     reloadScript = function (src) {
@@ -181,8 +209,12 @@
                 ws.close();
         };
     };
-    
-    bind(controller, 'html');
 
-}) (window.bind);
+    
+    
+    register(controller, 'ROOT');
+
+    bind('ROOT', 'html');
+
+}) (window.register, window.bind);
 
