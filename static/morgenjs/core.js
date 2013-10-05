@@ -127,13 +127,22 @@
     // Params:
     //   `name` -- a string containing the name of the controller to be used
     //   `selector` -- a string to be used with `document.querySelector`, or
-    //                 a DOM Element.
+    //                 a DOM Element. If the value is `undefined`, the selector
+    //                 is set to `html`. To create a new DOM Node with the
+    //                 specified controller, use the value `null` or use
+    //                 the function `morgen.create`.
     //   `extras` -- an object with some extra values
+    //
+    // Return:
+    //   The new context created.
     //
     morgen.load = function (name, selector, extras) {
         var context, element, controller, on, off, remove, innerRender, innerQuerySelector;
 
-        element    = typeof selector == 'string' ? document.querySelector(selector) : selector;
+        if (selector === undefined)
+            selector = 'html';
+
+        element = typeof selector == 'string' ? document.querySelector(selector) : selector;
         controller = __morgen.controllers[name];
 
 
@@ -230,6 +239,20 @@
         return context;
     };
 
+
+    // Load a controller in a new DOM Node, using the optional `extras` object.
+    // Creating a controller will also render it in the DOM.
+    //
+    // Params:
+    //   `name` -- a string containing the name of the controller to be used
+    //   `extras` -- an object with some extra values
+    //
+    // Return:
+    //   The new context created. The newly created DOM Node is stored in the
+    //   `element` property.
+    morgen.create = function (name, extras) {
+        return morgen.load(name, null, extras);
+    };
 
 
     // Reload a controller.

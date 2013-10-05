@@ -5,7 +5,7 @@
 
     // Load root controller, and start watching
     // the FS change! :)
-    load('ROOT', 'html');
+    load('ROOT');
 
 }) (window.morgen.load);
 
