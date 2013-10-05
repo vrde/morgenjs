@@ -1,4 +1,6 @@
-(function (register) {
+(function (register, load) {
+
+    var tmpl = '<ul data-scope="items"></ul>';
 
     register('list', function (c) {
 
@@ -6,10 +8,12 @@
             'click a': function (e) { console.log('ciao'); }
         };
 
-        c.render('list', { name: 'Foo' });
+        c.render(tmpl);
 
+        for (var i = 0; i < 5; i++)
+            c.element.appendChild(load('item', null, { value: i }).element);
     });
 
 
-}) (window.morgen.register);
+}) (window.morgen.register, window.morgen.load);
 

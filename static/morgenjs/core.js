@@ -131,7 +131,7 @@
     //   `extras` -- an object with some extra values
     //
     morgen.load = function (name, selector, extras) {
-        var context, element, controller, on, off, remove, innerRender;
+        var context, element, controller, on, off, remove, innerRender, innerQuerySelector;
 
         element    = typeof selector == 'string' ? document.querySelector(selector) : selector;
         controller = __morgen.controllers[name];
@@ -143,7 +143,21 @@
 
         // Helper function to render a template against data
         innerRender = function (template, data) {
-            element.innerHTML = render(template, data);
+            var html = render(template, data),
+                tmp;
+
+            if (element) {
+                element.innerHTML = html;
+            } else {
+                tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                context.element = tmp.firstChild;
+            }
+        };
+
+
+        innerQuerySelector = function (query) {
+            return element.querySelector(query);
         };
 
 
@@ -189,6 +203,7 @@
 
         // Initialize the context.
         context = {
+            $      : innerQuerySelector,
             name   : name,
             element: element,
             render : innerRender,
@@ -208,6 +223,8 @@
         on();
 
         console.log('[core] loaded new controller', name, 'for', selector);
+
+        return context;
     };
 
 
