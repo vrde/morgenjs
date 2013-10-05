@@ -50,8 +50,8 @@ class MainHandler(tornado.web.RequestHandler):
 
 def make_application():
     application = tornado.web.Application([
-            (r'^/$', MainHandler),
             (r'^/ws$', WSHandler),
+            (r'.*', MainHandler),
         ],
 
         debug=True,
