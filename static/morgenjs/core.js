@@ -168,8 +168,8 @@
 
             // if there are some old listeners already binded,
             // remove them
-            if (ctx && ctx.element && ctx.element.__morgenContext)
-                off(ctx.element.__morgenContext);
+            if (ctx && ctx.element && ctx.element.__morgenContexts)
+                off(ctx.element.__morgenContexts[name]);
 
             // bind the new listeners
             addEvents(ctx);
@@ -178,7 +178,10 @@
             __morgen.contexts[ctx.name][ctx.uid] = ctx;
 
             // update the current context
-            ctx.element.__morgenContext = ctx;
+            if (!ctx.element.__morgenContexts)
+                ctx.element.__morgenContexts = {};
+
+            ctx.element.__morgenContexts[name] = ctx;
         };
 
 
