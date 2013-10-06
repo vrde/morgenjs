@@ -21,7 +21,10 @@
             '_scope': window,
 
             'popstate': function (e) {
-                dispatch('route', e.state);
+                if (e.state)
+                    dispatch('route', e.state);
+                else
+                    console.warn('[history] dropping routing with empty state');
             }
         };
 

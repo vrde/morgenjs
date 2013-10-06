@@ -19,7 +19,11 @@
         controllers: { },
 
         // an int to generate uids
-        uid        : 0
+        uid        : 0,
+
+        // listeners counter
+        totalListeners: 0
+
     };
 
 

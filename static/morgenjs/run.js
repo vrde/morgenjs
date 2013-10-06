@@ -1,4 +1,4 @@
-(function (load) {
+(function (load, dispatch) {
 
     'use strict';
 
@@ -11,5 +11,10 @@
     // Load the history controller
     load('__morgen_history');
 
-}) (window.morgen.load);
+
+    // Bootstrap the main app
+    dispatch('bootstrap');
+
+}) (window.morgen.load,
+    window.morgen.dispatch);
 

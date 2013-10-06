@@ -4,7 +4,7 @@
 
 
     // define what we need in this anon func
-    var render, manageEvents, addEvents, removeEvents;
+    var render, manageEvents, addEvents, removeEvents, routePattern;
 
 
 
@@ -98,10 +98,12 @@
                 for (j = 0; j < objects.length; j++) {
                     for (k = 0; k < eventNames.length; k++) {
 
-                        // `action` can be `add` or `remove`, so we are calling
+                        // `action` can be `, dispatchadd` or `remove`, so we are calling
                         // the method `addEventListener` or `removeEventListener`
                         objects[j][action + 'EventListener'](eventNames[k], callback);
-                        console.log('[core]', action, eventNames[k], 'to', objects[j]);
+                        //console.log('[core]', action, eventNames[k], 'to', objects[j]);
+
+                        __morgen.totalListeners += action == 'add' ? 1 : -1;
                     }
                 }
             }
@@ -159,12 +161,16 @@
                 tmp;
 
             if (element) {
-                element.innerHTML = html;
+                context.element.innerHTML = html;
             } else {
                 tmp = document.createElement('div');
                 tmp.innerHTML = html;
                 context.element = tmp.firstChild;
             }
+
+            context.element.setAttribute('data-tainted', '');
+
+            return context.element;
         };
 
 
@@ -209,10 +215,18 @@
 
         // Remove the Node from the DOM.
         remove = function (ctx) {
+            var i, key, children;
+
             ctx = ctx || context;
             if (!ctx) return;
 
             off(ctx);
+
+            children = ctx.element.querySelectorAll('[data-tainted]');
+            for (i = 0; i < children.length; i++)
+                for (key in children[i].__morgenContexts)
+                    off(children[i].__morgenContexts[key]);
+
             ctx.element.parentNode.removeChild(ctx.element);
         };
 
@@ -237,7 +251,7 @@
         // Start listen to the events
         on();
 
-        console.log('[core] loaded new controller', name, 'for', selector);
+        console.log('[core] loaded new controller', name, 'in', element);
 
         return context;
     };
@@ -297,10 +311,10 @@
     // Dispatch an event to all the subscribers to the `hub`.
     morgen.dispatch = function (name, payload) {
         console.debug('[dispatch]', name, payload);
-        morgen.hub.dispatchEvent(new window.CustomEvent(name, payload));
+        morgen.hub.dispatchEvent(new window.CustomEvent(name, { detail: payload }));
     };
 
 
-}) (window.morgen, window.__morgen);
 
+}) (window.morgen, window.__morgen);
 

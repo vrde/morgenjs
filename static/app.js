@@ -1,9 +1,32 @@
-(function (load) {
-    var history, main, header, list;
+(function (register, load, hub) {
 
-    main   = load('main', '[data-scope="main"]');
-    header = load('header', main.$('[data-scope="header"]'), { name: 'Mario Brega' });
-    list   = load('list', main.$('[data-scope="content"]'));
+    register('app', function (c) {
 
-}) (window.morgen.load);
+        var route = function (e) {
+            var href = e.detail.href;
+        };
+
+
+        c.events = {
+            '_scope': hub,
+
+            'bootstrap': function (e) {
+                var main, header, list;
+
+                main   = load('main', '[data-scope="main"]');
+                header = load('header', main.$('[data-scope="header"]'), { name: 'Mario Brega' });
+                list   = load('list', main.$('[data-scope="content"]'));
+            },
+
+            'route': route
+        };
+
+    });
+
+
+    load('app');
+
+}) (window.morgen.register,
+    window.morgen.load,
+    window.morgen.hub);
 
