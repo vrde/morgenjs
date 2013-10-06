@@ -5,12 +5,13 @@ body {
 .main {
     padding: 20px 40px;
     margin: 10px 30px;
-    box-shadow: 1px 1px 2px black;
     border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.3);
     background-color: yellow;
 }
 
 input {
     width: 100%;
+    border: 1px solid rgba(0,0,0,0.3);
 }
 

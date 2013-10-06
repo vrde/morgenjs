@@ -17,7 +17,7 @@
 
         for (var i = 0; i < 5; i++)
             c.element.appendChild(
-                create('item', { value: 'test! ' + i }).element);
+                create('item', { value: 'Hello ' + i }).element);
     });
 
 
