@@ -288,6 +288,19 @@
             __morgen.contexts[name] = {};
     };
 
+
+    // Centralized hub for messages. Controllers can
+    // subscribe to it to receive messages.
+    morgen.hub = document.querySelector('html');
+
+
+    // Dispatch an event to all the subscribers to the `hub`.
+    morgen.dispatch = function (name, payload) {
+        console.debug('[dispatch]', name, payload);
+        morgen.hub.dispatchEvent(new window.CustomEvent(name, payload));
+    };
+
+
 }) (window.morgen, window.__morgen);
 
 

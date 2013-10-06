@@ -7,15 +7,10 @@
     // functions exposed by the `morgen` namespace.
     ns.__morgen = {
 
-        // global events are automatically added to every
+        // Global events are automatically added to every
         // controller. It's a cheap way to avoid binding
         // *live* events to the DOM.
-        events     : {
-            'click [data-push]': function (e) {
-                window.history.pushState({}, '', e.target.attributes.href.value);
-                e.preventDefault();
-            }
-        },
+        events     : { },
 
         // contains all the contexts in the current session
         contexts   : { },
