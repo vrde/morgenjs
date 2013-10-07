@@ -26,7 +26,7 @@
     // The function is quite long and nested, but not difficult to understand.
     manageEvents = function (context, action) {
         var events, tokens, eventNames, query, callback,
-            scope, objects, key,
+            router, scope, objects, key,
             i, j, k;
 
 
@@ -40,8 +40,19 @@
         if (!(events instanceof Array))
             events = [events];
 
+
         // Push global events!
         events.push(__morgen.events);
+
+
+        // Push router events!
+        if (context.routes) {
+            router = morgen.createRouter(context.routes);
+            events.push({
+                '_scope': morgen.hub,
+                'route': function (e) { router(e.detail.href); }
+            });
+        }
 
 
         // Iterate all over the events in our list.
@@ -241,7 +252,8 @@
             remove : remove,
             extras : extras,
             cleanup: null,
-            events : null
+            events : null,
+            routes : null
         };
 
 

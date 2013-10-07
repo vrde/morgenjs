@@ -9,7 +9,7 @@
         it('creates a valid route object from an empty list of routes', function () {
             var router;
             router = createRouter([]);
-            expect(router.route).toBeTruthy();
+            expect(router).toBeTruthy();
         });
 
 
@@ -23,22 +23,22 @@
 
 
             router = createRouter([
-                [''               , mock0],
-                ['resources'      , mock1],
-                ['resources/about', mock2],
-                ['resources/terms', mock3]
+                ['/'               , mock0],
+                ['/resources'      , mock1],
+                ['/resources/about', mock2],
+                ['/resources/terms', mock3]
             ]);
 
-            router.route('');
+            router('/');
             expect(mock0).toHaveBeenCalled();
 
-            router.route('resources');
+            router('/resources');
             expect(mock1).toHaveBeenCalled();
 
-            router.route('resources/about');
+            router('/resources/about');
             expect(mock2).toHaveBeenCalled();
 
-            router.route('resources/terms_');
+            router('/resources/terms_');
             expect(mock3).not.toHaveBeenCalled();
         });
 
@@ -52,18 +52,18 @@
 
 
             router = createRouter([
-                ['post/:id'           , mock0],
-                ['post/:id/page-:page', mock1],
-                ['post/:id-test'      , mock2]
+                ['/post/:id'           , mock0],
+                ['/post/:id/page-:page', mock1],
+                ['/post/:id-test'      , mock2]
             ]);
 
-            router.route('post/42');
+            router('/post/42');
             expect(mock0).toHaveBeenCalledWith('42');
 
-            router.route('post/42/page-3');
+            router('/post/42/page-3');
             expect(mock1).toHaveBeenCalledWith('42', '3');
 
-            router.route('post/11-test');
+            router('/post/11-test');
             expect(mock2).toHaveBeenCalledWith('11');
         });
 

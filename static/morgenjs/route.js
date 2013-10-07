@@ -37,16 +37,14 @@
             ]);
         }
 
-        return {
-            route: function (path) {
-                var args;
+        return function (path) {
+            var args;
 
-                for (var i = 0; i < rules.length; i++) {
-                    args = rules[i][RULE](path);
+            for (var i = 0; i < rules.length; i++) {
+                args = rules[i][RULE](path);
 
-                    if (args)
-                        return rules[i][FUNC].apply(null, args);
-                }
+                if (args)
+                    return rules[i][FUNC].apply(null, args);
             }
         };
 
