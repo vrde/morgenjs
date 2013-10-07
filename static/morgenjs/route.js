@@ -16,6 +16,9 @@
             return function (path) {
                 var match = re.exec(path);
 
+                // This allows to reuse the regexp
+                re.lastIndex = 0;
+
                 if (!match)
                     return;
 
