@@ -8,7 +8,8 @@
             'click .remove': function (e) { console.log('remove'); c.remove(); }
         };
 
-        c.render('item', c.extras, c.ready);
+        c.render('item', c.extras);
+        c.ready();
     });
 
 

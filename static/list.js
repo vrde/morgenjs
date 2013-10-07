@@ -11,13 +11,13 @@
             }
         };
 
-        c.render('list', {}, function () {
-            for (var i = 0; i < 5; i++)
-                c.element.appendChild(
-                    create('item', { id: i, value: 'Hello ' + i }).element);
+        c.render('list');
 
-            c.ready();
-        });
+        for (var i = 0; i < 5; i++)
+            c.element.appendChild(
+                create('item', { id: i, value: 'Hello ' + i }).element);
+
+        c.ready();
 
     });
 
