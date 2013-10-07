@@ -285,6 +285,8 @@
         for (var key in __morgen.contexts[name]) {
             ctx = __morgen.contexts[name][key];
             morgen.load(name, ctx.element, ctx.extras);
+            ctx.element.classList.add('__morgen-reload');
+            setTimeout(function () { ctx.element.classList.remove('__morgen-reload'); }, 1000);
         }
     };
 
