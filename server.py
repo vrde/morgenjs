@@ -95,9 +95,12 @@ def run_server(application):
     tornado.log.enable_pretty_logging()
     tornado.ioloop.IOLoop.instance().start()
 
-
-if __name__ == '__main__':
+def main():
     start_watching()
     app = make_application()
     run_server(app)
+
+
+if __name__ == '__main__':
+    main()
 
