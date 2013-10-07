@@ -76,14 +76,14 @@ class TemplateHandler(tornado.web.RequestHandler):
 
 def make_application():
     application = tornado.web.Application([
-            (r'^/virtual/template/(.*).html$', TemplateHandler, {'template_path': 'static/templates' }),
+            (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': 'static/templates' }),
+            (r'^/static/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'static')}),
             (r'^/ws$', WSHandler),
             (r'.*', MainHandler),
         ],
 
         debug=True,
-        template_path=os.path.join(os.path.dirname(__file__), "templates"),
-        static_path=os.path.join(os.path.dirname(__file__), "static"),
+        template_path=os.path.join(os.path.dirname(__file__), "templates")
     )
 
     return application

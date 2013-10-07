@@ -13,7 +13,7 @@
 
     // Handy function to reload a script tag.
     reloadScript = function (src) {
-        var attr    = src.match(/\.js$/) ? 'src' : 'href',
+        var attr    = src.match(/\.(js|html)$/) ? 'src' : 'href',
             tag     = attr == 'src' ? 'script' : 'link',
             oldElem = document.querySelector('[' + attr + '^="' + src + '"]'),
             newElem = document.createElement(tag);
@@ -45,7 +45,7 @@
         onmessage = function(evt) {
             var filename = evt.data,
                 src      = filename,
-                attr     = src.match(/\.js$/) ? 'src' : 'href',
+                attr     = src.match(/\.(js|html)$/) ? 'src' : 'href',
                 tag      = attr == 'src' ? 'script' : 'link',
                 elem     = document.querySelector('[' + attr + '^="' + src + '"]');
 

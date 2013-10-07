@@ -14,7 +14,14 @@
 
 
     morgen.registerTemplate = function (name, template) {
+        var alreadyThere = name in __morgen.templates,
+            key;
+
         __morgen.templates[name] = morgen.compile(template);
+
+        if (alreadyThere)
+            for (key in __morgen.tmpl2ctrl[name])
+                morgen.reload(key);
     };
 
     morgen.render = function (name, context, element) {
