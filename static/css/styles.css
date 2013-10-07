@@ -7,7 +7,7 @@ body {
     margin: 10px 30px;
     border-radius: 3px;
     border: 1px solid rgba(0,0,0,0.3);
-    background-color: yellow;
+    background-color: tomato;
 }
 
 input {
@@ -15,3 +15,6 @@ input {
     border: 1px solid rgba(0,0,0,0.3);
 }
 
+.hide {
+    display: none;
+}

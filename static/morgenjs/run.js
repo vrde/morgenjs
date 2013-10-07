@@ -12,9 +12,6 @@
     load('__morgen_history');
 
 
-    // Bootstrap the main app
-    dispatch('bootstrap');
-
 }) (window.morgen.load,
     window.morgen.dispatch);
 

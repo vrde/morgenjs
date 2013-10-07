@@ -4,7 +4,13 @@
         var main, header, list;
 
         c.routes = [
-            [ '/item/:name', function (name) { console.log('>>>', name); } ]
+            ['/', function (id) {
+                list.element.className = '';
+            }],
+
+            ['/item/:id', function (id) {
+                list.element.className = 'hide';
+            }]
         ];
 
         main   = load('main', '[data-scope="main"]');
