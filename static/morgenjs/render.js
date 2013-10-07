@@ -3,7 +3,7 @@
 
     var compile, lookup;
 
-    compile = function (template) {
+    morgen.compile = function (template) {
         return function (context) {
             context = context || {};
             return template.replace(/\{\{\s*(\w+)\s*\}\}/g, function(match, key) {
@@ -13,10 +13,9 @@
     };
 
 
-    morgen.cache = function (name, func) {
-        __morgen.templates[name] = func;
+    morgen.registeTemplate = function (name, template) {
+        __morgen.templates[name] = morgen.compile(template);
     };
-
 
     morgen.render = function (name, context, element, callback) {
         var request, template = __morgen.templates[name];
@@ -32,7 +31,7 @@
             request.open('GET', '/static/templates/' + name + '.html', false);
 
             request.onload = function (e) {
-                var func = compile(this.responseText);
+                var func = morgen.compile(this.responseText);
                 __morgen.templates[name] = func;
                 morgen.render(name, context, element, callback);
             };

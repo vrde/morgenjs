@@ -1,6 +1,8 @@
 import os
 from datetime import datetime, timedelta
 import logging
+import codecs
+import string
 
 import tornado.httpserver
 import tornado.websocket
@@ -48,8 +50,33 @@ class MainHandler(tornado.web.RequestHandler):
 
 
 
+class TemplateHandler(tornado.web.RequestHandler):
+    TMPL = u'morgen.registerTemplate("%s", "%s");'
+
+    def initialize(self, template_path):
+        self.template_path = template_path
+
+    def compile(self, name, template):
+        template = template.replace('"', '\\"')
+        template = u' '.join(map(string.lstrip, filter(bool, template.split('\n'))))
+        template = self.TMPL % (name, template)
+
+        return template
+
+    def get(self, path):
+        fullpath = os.path.join(self.template_path, path + '.html')
+        try:
+            template = codecs.open(fullpath, 'r').read()
+        except:
+            raise tornado.web.HTTPError(404)
+
+        self.write(self.compile(path, template))
+
+
+
 def make_application():
     application = tornado.web.Application([
+            (r'^/virtual/template/(.*).html$', TemplateHandler, {'template_path': 'static/templates' }),
             (r'^/ws$', WSHandler),
             (r'.*', MainHandler),
         ],
