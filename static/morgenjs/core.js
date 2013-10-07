@@ -7,17 +7,6 @@
     var render, manageEvents, addEvents, removeEvents, routePattern;
 
 
-
-    // Super simple templating engine by Andrea di Persio
-    render = function (template, context) {
-        context = context || {};
-        return template.replace(/\{\{\s*(\w+)\s*\}\}/g, function(match, key) {
-            return context[key];
-        });
-    };
-
-
-
     // Add or remove event listeners to a set of objects.
     //
     // context -- the context to use
@@ -168,18 +157,17 @@
 
 
         // Helper function to render a template against data
-        innerRender = function (template, data) {
-            var html = render(template, data),
-                tmp;
+        innerRender = function (name, data, callback) {
 
-            if (element) {
-                context.element.innerHTML = html;
-            } else {
-                tmp = document.createElement('div');
-                tmp.innerHTML = html;
-                context.element = tmp.firstChild;
-            }
+            // Remember where the template has been used
+            if (!__morgen.tmpl2ctrl[name])
+                __morgen.tmpl2ctrl[name] = { };
+            __morgen.tmpl2ctrl[name][context.name] = true;
 
+            if (!element)
+                context.element = document.createElement('div');
+
+            morgen.render(name, data, context.element, callback),
             context.element.setAttribute('data-tainted', '');
 
             return context.element;

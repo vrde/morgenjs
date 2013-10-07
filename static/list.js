@@ -1,7 +1,5 @@
 (function (register, load, create, uid) {
 
-    var tmpl = '<div><form><input /></form><ul data-scope="items"></ul></div>';
-
     register('list', function (c) {
 
         c.events = {
@@ -13,13 +11,14 @@
             }
         };
 
-        c.render(tmpl);
+        c.render('list', {}, function () {
+            for (var i = 0; i < 5; i++)
+                c.element.appendChild(
+                    create('item', { id: i, value: 'Hello ' + i }).element);
 
-        for (var i = 0; i < 5; i++)
-            c.element.appendChild(
-                create('item', { id: i, value: 'Hello ' + i }).element);
+            c.ready();
+        });
 
-        c.ready();
     });
 
 

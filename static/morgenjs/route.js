@@ -33,12 +33,12 @@
     morgen.createRouter = function (routes) {
         var rules = [];
 
-        for (var i = 0; i < routes.length; i++) {
+        for (var i = 0; i < routes.length; i++)
             rules.push([
                 createRule(routes[i][RULE]),
                 routes[i][FUNC]
             ]);
-        }
+
 
         return function (path) {
             var args;

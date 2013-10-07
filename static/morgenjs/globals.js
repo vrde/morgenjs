@@ -12,11 +12,19 @@
         // *live* events to the DOM.
         events     : { },
 
-        // contains all the contexts in the current session
+        // contain all the contexts in the current session
         contexts   : { },
 
-        // contains all the controllers registered
+        // contain all the controllers registered
         controllers: { },
+
+
+        // store all the templates
+        templates  : { },
+
+        // a map between templates and controllers
+        tmpl2ctrl  : { },
+
 
         // an int to generate uids
         uid        : 0,
