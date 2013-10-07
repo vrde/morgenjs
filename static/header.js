@@ -4,6 +4,8 @@
 
     register('header', function (c) {
         c.render(tmpl, { name: c.extras.name.toUpperCase() });
+
+        c.ready();
     });
 
 

@@ -12,6 +12,7 @@
 
         c.render(tmpl, c.extras);
 
+        c.ready();
     });
 
 

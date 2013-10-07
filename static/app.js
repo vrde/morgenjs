@@ -16,6 +16,8 @@
         main   = load('main', '[data-scope="main"]');
         header = load('header', main.$('[data-scope="header"]'), { name: 'Mario Brega' });
         list   = load('list', main.$('[data-scope="content"]'));
+
+        c.ready();
     });
 
     load('app');
