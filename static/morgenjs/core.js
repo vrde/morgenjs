@@ -297,6 +297,23 @@
     };
 
 
+    morgen.remove = function (selector) {
+        var elements = document.querySelectorAll(selector),
+            contexts, i, j;
+
+        for (i = 0; i < elements.length; i++) {
+            contexts = elements[i].__morgenContexts;
+
+            for (j = 0; j < contexts.length; j++)
+                contexts[j].off();
+
+            elements[i].parentNode.removeChild(elements[i]);
+        }
+
+
+
+    };
+
 
     // Register a controller. If the controller has been already registered,
     // register it again and reload all the existing ones.
