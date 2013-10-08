@@ -28,6 +28,7 @@
             }
         };
 
+        c.ready();
     });
 
 }) (window.morgen.register,
