@@ -98,7 +98,7 @@
                 for (j = 0; j < objects.length; j++) {
                     for (k = 0; k < eventNames.length; k++) {
 
-                        // `action` can be `, dispatchadd` or `remove`, so we are calling
+                        // `action` can be `add` or `remove`, so we are calling
                         // the method `addEventListener` or `removeEventListener`
                         objects[j][action + 'EventListener'](eventNames[k], callback);
                         //console.log('[core]', action, eventNames[k], 'to', objects[j]);
@@ -212,7 +212,18 @@
 
         // Remove the events from the context.
         off = function (ctx) {
+            var i, key, children, subctx;
+
             ctx = ctx || context;
+
+            children = ctx.element.querySelectorAll('[data-tainted]');
+            for (i = 0; i < children.length; i++)
+                for (key in children[i].__morgenContexts) {
+                    subctx = children[i].__morgenContexts[key];
+                    delete __morgen.contexts[subctx.name][subctx.uid];
+                    if (subctx.cleanup) subctx.cleanup();
+                    removeEvents(subctx);
+                }
 
             delete __morgen.contexts[ctx.name][ctx.uid];
             if (ctx.cleanup) ctx.cleanup();
@@ -222,17 +233,10 @@
 
         // Remove the Node from the DOM.
         remove = function (ctx) {
-            var i, key, children;
-
             ctx = ctx || context;
             if (!ctx) return;
 
             off(ctx);
-
-            children = ctx.element.querySelectorAll('[data-tainted]');
-            for (i = 0; i < children.length; i++)
-                for (key in children[i].__morgenContexts)
-                    off(children[i].__morgenContexts[key]);
 
             ctx.element.parentNode.removeChild(ctx.element);
         };
@@ -299,13 +303,13 @@
 
     morgen.remove = function (selector) {
         var elements = document.querySelectorAll(selector),
-            contexts, i, j;
+            contexts, i, key;
 
         for (i = 0; i < elements.length; i++) {
             contexts = elements[i].__morgenContexts;
 
-            for (j = 0; j < contexts.length; j++)
-                contexts[j].off();
+            for (key in contexts)
+                contexts[key].off();
 
             elements[i].parentNode.removeChild(elements[i]);
         }

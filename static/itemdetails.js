@@ -15,7 +15,6 @@
         var data = db[c.extras.id];
 
         c.render('itemdetails', data);
-        console.log('???', c.extras);
         c.ready();
     });
 
