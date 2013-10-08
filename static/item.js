@@ -9,7 +9,6 @@
         };
 
         c.render('item', c.extras);
-        c.ready();
     });
 
 

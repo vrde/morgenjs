@@ -2,7 +2,6 @@
 
     register('main', function (c) {
         c.render('main');
-        c.ready();
     });
 
 

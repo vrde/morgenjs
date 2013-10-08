@@ -94,7 +94,6 @@
                 ws.close();
         };
 
-        c.ready();
     };
 
     

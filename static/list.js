@@ -17,8 +17,6 @@
             c.element.appendChild(
                 create('item', { id: i, value: 'Hello ' + i }).element);
 
-        c.ready();
-
     });
 
 

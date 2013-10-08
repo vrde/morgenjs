@@ -33,8 +33,6 @@
         // Push current route
         window.history.replaceState({ href: pathname }, '', pathname);
         dispatch('route', { href: pathname });
-
-        c.ready();
     });
 
 }) (window.morgen.register,

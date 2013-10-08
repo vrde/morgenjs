@@ -142,7 +142,7 @@
     //   The new context created.
     //
     morgen.load = function (name, selector, extras) {
-        var context, element, controller, ready,
+        var context, element, controller,
             on, off, remove, innerRender, innerQuerySelector;
 
         if (selector === undefined)
@@ -178,13 +178,6 @@
             return element.querySelector(query);
         };
 
-
-        ready = function (ctx) {
-            ctx = ctx || context;
-            if (!ctx) return;
-
-            ctx.on();
-        };
 
         // Add the events to the context.
         on = function (ctx) {
@@ -243,7 +236,6 @@
             name   : name,
             element: element,
             render : innerRender,
-            ready  : ready,
             on     : on,
             off    : off,
             remove : remove,
@@ -256,6 +248,8 @@
 
         // Start the controller with the specified context.
         controller(context);
+
+        on();
 
         console.log('[core] loaded new controller', name, 'in', element);
 
