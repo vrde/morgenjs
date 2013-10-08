@@ -7,6 +7,7 @@
     // the FS change! :)
     load('__morgen_watchdog');
 
+    load('__morgen_broadcast');
 
     // Load the history controller
     load('__morgen_history');

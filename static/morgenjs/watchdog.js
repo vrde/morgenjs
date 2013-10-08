@@ -1,4 +1,4 @@
-(function (register, load) {
+(function (register, load, __morgen) {
 
     // All the stuff we need to keep an eye on the file
     // changes.
@@ -94,11 +94,14 @@
                 ws.close();
         };
 
+        __morgen.ws = ws;
     };
 
     
     // Register the `__morgen_watchdog` controller.
     register('__morgen_watchdog', controller);
 
-}) (window.morgen.register, window.morgen.load);
+}) (window.morgen.register,
+    window.morgen.load,
+    window.__morgen);
 

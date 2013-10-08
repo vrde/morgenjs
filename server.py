@@ -17,9 +17,10 @@ from watchdog.events import FileSystemEventHandler
 wss = []
 
 
-def ws_send(message):
+def ws_send(message, sender=None):
     for ws in wss:
-        ws.write_message(message)
+        if sender != ws:
+            ws.write_message(message)
 
 
 class WSHandler(tornado.websocket.WebSocketHandler):
@@ -32,7 +33,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
             wss.append(self)
 
     def on_message(self, message):
-        logging.debug('received message: {}'.format(message))
+        logging.info('received message: {}'.format(message))
+        ws_send(message, self)
 
     def on_close(self):
         ua = self.request.headers.get('User-Agent')
