@@ -143,7 +143,8 @@
     //
     morgen.load = function (name, selector, extras) {
         var context, element, controller,
-            on, off, remove, innerRender, innerQuerySelector;
+            on, off, getValue, setValue,
+            remove, innerRender, innerQuerySelector;
 
         if (selector === undefined)
             selector = 'html';
@@ -212,6 +213,19 @@
             removeEvents(ctx);
         };
 
+        setValue = function (modelName, value) {
+            var modelElem = context.element.querySelector('[data-model="' + modelName + '"]');
+
+            if (modelElem)
+                modelElem.textContent = value;
+        };
+
+        getValue = function (modelName) {
+            var modelElem = context.element.querySelector('[data-model="' + modelName + '"]');
+
+            if (modelElem)
+                return modelElem.textContent;
+        };
 
         // Remove the Node from the DOM.
         remove = function (ctx) {
@@ -238,6 +252,10 @@
             render : innerRender,
             on     : on,
             off    : off,
+
+            set    : setValue,
+            get    : getValue,
+
             remove : remove,
             extras : extras,
             cleanup: null,
