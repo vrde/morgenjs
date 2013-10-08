@@ -212,18 +212,7 @@
 
         // Remove the events from the context.
         off = function (ctx) {
-            var i, key, children, subctx;
-
             ctx = ctx || context;
-
-            children = ctx.element.querySelectorAll('[data-tainted]');
-            for (i = 0; i < children.length; i++)
-                for (key in children[i].__morgenContexts) {
-                    subctx = children[i].__morgenContexts[key];
-                    delete __morgen.contexts[subctx.name][subctx.uid];
-                    if (subctx.cleanup) subctx.cleanup();
-                    removeEvents(subctx);
-                }
 
             delete __morgen.contexts[ctx.name][ctx.uid];
             if (ctx.cleanup) ctx.cleanup();
@@ -233,10 +222,17 @@
 
         // Remove the Node from the DOM.
         remove = function (ctx) {
+            var i, key, children;
+
             ctx = ctx || context;
             if (!ctx) return;
 
             off(ctx);
+
+            children = ctx.element.querySelectorAll('[data-tainted]');
+            for (i = 0; i < children.length; i++)
+                for (key in children[i].__morgenContexts)
+                    children[i].__morgenContexts[key].off();
 
             ctx.element.parentNode.removeChild(ctx.element);
         };
