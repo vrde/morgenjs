@@ -17,6 +17,8 @@
     // Register a new controller to manage the History API.
     register('__morgen_history', function (c) {
 
+        var pathname = window.location.pathname;
+
         c.events = {
             '_scope': window,
 
@@ -27,6 +29,10 @@
                     console.warn('[history] dropping routing with empty state');
             }
         };
+
+        // Push current route
+        window.history.replaceState({ href: pathname }, '', pathname);
+        dispatch('route', { href: pathname });
 
         c.ready();
     });
