@@ -80,6 +80,7 @@ def make_application():
     application = tornado.web.Application([
             (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': 'static/templates' }),
             (r'^/static/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'static')}),
+            (r'^/test/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'test')}),
             (r'^/ws$', WSHandler),
             (r'.*', MainHandler),
         ],

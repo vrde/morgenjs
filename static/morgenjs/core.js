@@ -150,6 +150,10 @@
             selector = 'html';
 
         element = typeof selector == 'string' ? document.querySelector(selector) : selector;
+
+        if (!element)
+            element = document.createElement('div');
+
         controller = __morgen.controllers[name];
 
 
@@ -164,9 +168,6 @@
             if (!__morgen.tmpl2ctrl[name])
                 __morgen.tmpl2ctrl[name] = { };
             __morgen.tmpl2ctrl[name][context.name] = true;
-
-            if (!element)
-                context.element = document.createElement('div');
 
             morgen.render(name, data, context.element, callback),
             context.element.setAttribute('data-tainted', '');
@@ -343,6 +344,8 @@
             // If the controller has been registered for the first time
             // create an empty dict to contain all its contexts
             __morgen.contexts[name] = {};
+
+        return controller;
     };
 
 

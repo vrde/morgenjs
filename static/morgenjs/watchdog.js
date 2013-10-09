@@ -51,7 +51,7 @@
 
             // Still hardcoded, will be better one day.
             // If the index has changed, reload everything.
-            if (filename == '/templates/index.html')
+            if (window.location.pathname == '/test/index.html')
                 window.location.reload();
 
             // If the DOM contains an element that loaded the
