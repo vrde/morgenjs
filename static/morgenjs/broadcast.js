@@ -55,7 +55,7 @@
             }
         }
 
-        return xpath;
+        return xpath.toLowerCase();
 
     }
 
