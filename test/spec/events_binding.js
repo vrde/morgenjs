@@ -1,5 +1,5 @@
 (function (describe, it, expect,
-           register, create, load,
+           register, create, load, remove,
            __morgen) {
 
     'use strict';
@@ -30,6 +30,32 @@
             expect(elem).toBe(elem);
         });
 
+        it('loads listeners', function () {
+            var ctx1, ctx2, element, controller;
+
+            element = document.createElement('div');
+            element.innerHTML = '<a>hi!</a>';
+
+            controller = register('test3', function (c) {
+                c.events = {
+                    'click a': function () { }
+                };
+
+                ctx1 = c;
+            });
+
+            ctx2 = load('test3', element);
+
+            expect(ctx2.element.querySelector('a').__morgenListeners['click'][0])
+                .toBe(ctx1.events['click a']);
+
+            remove(element);
+
+            expect(ctx2.element.querySelector('a').__morgenListeners['click'].length)
+                .toBe(0);
+
+        });
+
     });
 
 }) (
@@ -42,6 +68,7 @@
     window.morgen.register,
     window.morgen.create,
     window.morgen.load,
+    window.morgen.remove,
     window.__morgen
 );
 

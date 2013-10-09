@@ -16,7 +16,7 @@
     manageEvents = function (context, action) {
         var events, tokens, eventNames, query, callback,
             router, scope, objects, key,
-            i, j, k;
+            nodeListeners, i, j, k, listenerIndex;
 
 
         // the action to perform with the events, can be `add`, to add events,
@@ -101,6 +101,23 @@
                         // `action` can be `add` or `remove`, so we are calling
                         // the method `addEventListener` or `removeEventListener`
                         objects[j][action + 'EventListener'](eventNames[k], callback);
+
+                        if (!objects[j].__morgenListeners) {
+                            objects[j].__morgenListeners = {};
+                        }
+
+                        nodeListeners = objects[j].__morgenListeners;
+
+                        if (!nodeListeners[eventNames[k]])
+                            nodeListeners[eventNames[k]] = [];
+
+                        if (action == 'add') {
+                            nodeListeners[eventNames[k]].push(callback);
+                        } else {
+                            listenerIndex = nodeListeners[eventNames[k]].indexOf(callback);
+                            if (listenerIndex != -1)
+                                nodeListeners[eventNames[k]].splice(listenerIndex, 1);
+                        }
                         //console.log('[core]', action, eventNames[k], 'to', objects[j]);
 
                         __morgen.totalListeners += action == 'add' ? 1 : -1;
@@ -311,8 +328,11 @@
 
 
     morgen.remove = function (selector) {
-        var elements = document.querySelectorAll(selector),
+        var elements = typeof selector == 'string' ? document.querySelector(selector) : selector,
             contexts, i, key;
+
+        if (!(elements instanceof Array))
+            elements = [elements];
 
         for (i = 0; i < elements.length; i++) {
             contexts = elements[i].__morgenContexts;
@@ -320,7 +340,8 @@
             for (key in contexts)
                 contexts[key].off();
 
-            elements[i].parentNode.removeChild(elements[i]);
+            if (elements[i].parentNode)
+                elements[i].parentNode.removeChild(elements[i]);
         }
 
 
