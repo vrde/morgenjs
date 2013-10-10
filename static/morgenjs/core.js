@@ -113,14 +113,16 @@
 
                         if (action == 'add') {
                             nodeListeners[eventNames[k]].push(callback);
+                            __morgen.totalListeners++;
                         } else {
                             listenerIndex = nodeListeners[eventNames[k]].indexOf(callback);
-                            if (listenerIndex != -1)
+                            if (listenerIndex != -1) {
                                 nodeListeners[eventNames[k]].splice(listenerIndex, 1);
+                                __morgen.totalListeners--;
+                            }
                         }
                         //console.log('[core]', action, eventNames[k], 'to', objects[j]);
 
-                        __morgen.totalListeners += action == 'add' ? 1 : -1;
                     }
                 }
             }
@@ -259,7 +261,7 @@
                 for (key in children[i].__morgenContexts)
                     children[i].__morgenContexts[key].off();
 
-            ctx.element.parentNode.removeChild(ctx.element);
+            ctx.element.remove();
         };
 
         // Initialize the context.
