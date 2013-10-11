@@ -15,7 +15,7 @@
 
         it('creates a route object able to manage static paths', function () {
             var mock0, mock1, mock2, mock3, router;
-            
+
             mock0 = createSpy('mock0');
             mock1 = createSpy('mock1');
             mock2 = createSpy('mock2');
@@ -45,7 +45,7 @@
 
         it('creates a route object able to manage arguments', function () {
             var mock0, mock1, mock2, router;
-            
+
             mock0 = createSpy('mock0');
             mock1 = createSpy('mock1');
             mock2 = createSpy('mock2');
