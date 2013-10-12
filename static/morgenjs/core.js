@@ -79,12 +79,9 @@
                 for (j = 0; j < objects.length; j++) {
                     for (k = 0; k < eventNames.length; k++) {
 
-                        // `action` can be `add` or `remove`, so we are calling
-                        // the method `addEventListener` or `removeEventListener`
-                        objects[j][action + 'EventListener'](eventNames[k], callback);
-
                         if (!objects[j].__morgenListeners) {
                             objects[j].__morgenListeners = {};
+                            console.log('>>>', 'adding listeners dict for', objects[j]);
                         }
 
                         nodeListeners = objects[j].__morgenListeners;
@@ -94,14 +91,21 @@
 
                         if (action == 'add') {
                             nodeListeners[eventNames[k]].push(callback);
+
+                            // attach the event to the DOM element
+                            objects[j].addEventListener(eventNames[k], callback);
+                            console.log('>>>', 'addEventListener', eventNames[k]);
+
                             __morgen.totalListeners++;
-                            console.log('Registering', eventNames[k]);
                         } else {
                             listenerIndex = nodeListeners[eventNames[k]].indexOf(callback);
                             if (listenerIndex != -1) {
+                                // remove the event to the DOM element
+                                objects[j].removeEventListener(eventNames[k], callback);
+                                console.log('>>>', 'removeEventListener', eventNames[k]);
+
                                 nodeListeners[eventNames[k]].splice(listenerIndex, 1);
                                 __morgen.totalListeners--;
-                                console.log('Removing', eventNames[k]);
                             }
                         }
                         //console.log('[core]', action, eventNames[k], 'to', objects[j]);
@@ -165,6 +169,12 @@
 
         // Helper function to render a template against data
         innerRender = function (name, data, callback) {
+            var ctx = context;
+
+            // if there are some old listeners already binded,
+            // remove them
+            if (ctx && ctx.element && ctx.element.__morgenContexts)
+                off(ctx.element.__morgenContexts[name]);
 
             // Remember where the template has been used
             if (!__morgen.tmpl2ctrl[name])
