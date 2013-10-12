@@ -7,7 +7,7 @@
 
     describe('Dispatcher', function () {
 
-        it('dispatch events to the subscribers', function () {
+        it('dispatches events to the subscribers', function () {
             var listener = createSpy('listener');
             hub.addEventListener('test-event', listener);
             dispatch('test-event', { foo: 'bar' });
