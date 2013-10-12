@@ -54,7 +54,7 @@
 
                 // Split the key on the space, since the canonical format is
                 // something like: `click a.menu`
-                tokens     = key.split(' ');
+                tokens = key.split(' ');
 
                 // Take the first half. It contais the name of the events to
                 // bind. The format can be a simple string, such as `click`,
@@ -66,10 +66,10 @@
                 // And then, the second half is the string we need to use for
                 // the querySelector. The second half can be omitted, if we
                 // specify a `_scope`.
-                query      = tokens[1];
+                query = tokens[1];
 
                 // Extract the callback from the hash.
-                callback   = events[i][key];
+                callback = events[i][key];
 
                 // And calculate the objects to which the events are added.
                 // If a `scope` has been defined, use it.
@@ -81,7 +81,6 @@
 
                         if (!objects[j].__morgenListeners) {
                             objects[j].__morgenListeners = {};
-                            console.log('>>>', 'adding listeners dict for', objects[j]);
                         }
 
                         nodeListeners = objects[j].__morgenListeners;
@@ -94,7 +93,7 @@
 
                             // attach the event to the DOM element
                             objects[j].addEventListener(eventNames[k], callback);
-                            console.log('>>>', 'addEventListener', eventNames[k]);
+                            console.log('[core] -- addEventListener', eventNames[k], objects[j]);
 
                             __morgen.totalListeners++;
                         } else {
@@ -102,7 +101,7 @@
                             if (listenerIndex != -1) {
                                 // remove the event to the DOM element
                                 objects[j].removeEventListener(eventNames[k], callback);
-                                console.log('>>>', 'removeEventListener', eventNames[k]);
+                                console.log('[core] -- removeEventListener', eventNames[k], objects[j]);
 
                                 nodeListeners[eventNames[k]].splice(listenerIndex, 1);
                                 __morgen.totalListeners--;
@@ -204,9 +203,6 @@
             // array, we wrap it inside an array. This will be handy later
             if (!(ctx.events instanceof Array))
                 ctx.events = ctx.events ? [ctx.events] : [];
-
-            // Push global events!
-            ctx.events.push(__morgen.events);
 
             // Push router events!
             if (ctx.routes) {
