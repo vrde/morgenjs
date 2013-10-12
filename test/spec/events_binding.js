@@ -74,6 +74,12 @@
                     'blur a': callback
                 };
 
+                c.routes = [
+                    ['/', function () { }],
+
+                    ['/item/:id', function (id) { }]
+                ];
+
                 ctx1 = c;
             });
 
@@ -108,6 +114,7 @@
 
             expect(listeners).toBe(__morgen.totalListeners);
         });
+
 
     });
 

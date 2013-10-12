@@ -22,27 +22,8 @@
         // the action to perform with the events, can be `add`, to add events,
         // or `remove`, to remove events.
         action = action || 'add';
-        events = context.events || {};
 
-        // We can manage arrays of events. If the param `events` is not an
-        // array, we wrap it inside an array. This will be handy later
-        if (!(events instanceof Array))
-            events = [events];
-
-
-        // Push global events!
-        events.push(__morgen.events);
-
-
-        // Push router events!
-        if (context.routes) {
-            router = morgen.createRouter(context.routes);
-            events.push({
-                '_scope': morgen.hub,
-                'route': function (e) { router(e.detail.href); }
-            });
-        }
-
+        events = context.events;
 
         // Iterate all over the events in our list.
         for (i = 0; i < events.length; i++) {
@@ -114,11 +95,13 @@
                         if (action == 'add') {
                             nodeListeners[eventNames[k]].push(callback);
                             __morgen.totalListeners++;
+                            console.log('Registering', eventNames[k]);
                         } else {
                             listenerIndex = nodeListeners[eventNames[k]].indexOf(callback);
                             if (listenerIndex != -1) {
                                 nodeListeners[eventNames[k]].splice(listenerIndex, 1);
                                 __morgen.totalListeners--;
+                                console.log('Removing', eventNames[k]);
                             }
                         }
                         //console.log('[core]', action, eventNames[k], 'to', objects[j]);
@@ -202,13 +185,36 @@
 
         // Add the events to the context.
         on = function (ctx) {
+            var router;
+
             ctx = ctx || context;
             if (!ctx) return;
+
+            ctx.events = ctx.events || {};
+
+            // We can manage arrays of events. If the param `events` is not an
+            // array, we wrap it inside an array. This will be handy later
+            if (!(ctx.events instanceof Array))
+                ctx.events = [ctx.events];
+
+
+            // Push global events!
+            ctx.events.push(__morgen.events);
+
+            // Push router events!
+            if (context.routes) {
+                router = morgen.createRouter(context.routes);
+                ctx.events.push({
+                    '_scope': morgen.hub,
+                    'route': function (e) { router(e.detail.href); }
+                });
+            }
 
             // if there are some old listeners already binded,
             // remove them
             if (ctx && ctx.element && ctx.element.__morgenContexts)
                 off(ctx.element.__morgenContexts[name]);
+
 
             // bind the new listeners
             addEvents(ctx);
@@ -345,8 +351,6 @@
             if (elements[i].parentNode)
                 elements[i].parentNode.removeChild(elements[i]);
         }
-
-
 
     };
 
