@@ -190,20 +190,17 @@
             ctx = ctx || context;
             if (!ctx) return;
 
-            ctx.events = ctx.events || {};
-
             // We can manage arrays of events. If the param `events` is not an
             // array, we wrap it inside an array. This will be handy later
             if (!(ctx.events instanceof Array))
-                ctx.events = [ctx.events];
-
+                ctx.events = ctx.events ? [ctx.events] : [];
 
             // Push global events!
             ctx.events.push(__morgen.events);
 
             // Push router events!
-            if (context.routes) {
-                router = morgen.createRouter(context.routes);
+            if (ctx.routes) {
+                router = morgen.createRouter(ctx.routes);
                 ctx.events.push({
                     '_scope': morgen.hub,
                     'route': function (e) { router(e.detail.href); }

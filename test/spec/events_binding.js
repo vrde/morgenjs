@@ -64,7 +64,7 @@
                 listeners = __morgen.totalListeners;
 
             element = document.createElement('div');
-            element.innerHTML = '<a>hi!</a>';
+            element.innerHTML = '<a data-push>hi!</a>';
 
             callback = function () { };
 
@@ -76,7 +76,6 @@
 
                 c.routes = [
                     ['/', function () { }],
-
                     ['/item/:id', function (id) { }]
                 ];
 
