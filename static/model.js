@@ -15,7 +15,7 @@
                     buffer.push(cursor.value);
                     cursor.continue();
                 } else {
-                    dispatch('db:all', buffer);
+                    dispatch('db:all', { results: buffer });
                 }
             };
         },

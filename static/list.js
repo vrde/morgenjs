@@ -10,10 +10,14 @@
             },
 
             'db:all': function (e) {
-                console.debug('***');
-                for (var i = 0; i < 1; i++)
+                var list = e.detail.results,
+                    r;
+
+                for (var i = 0; i < list.length; i++) {
+                    r = list[i];
                     c.element.appendChild(
-                        create('item', { id: i, value: 'Hello ' + i }).element);
+                        create('item', { id: r.id, value: r.value }).element);
+                }
             }
         };
 
