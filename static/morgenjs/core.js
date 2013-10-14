@@ -1,5 +1,4 @@
 (function (morgen, __morgen) {
-
     'use strict';
 
 
@@ -179,7 +178,7 @@
                 __morgen.tmpl2ctrl[name] = { };
             __morgen.tmpl2ctrl[name][context.name] = true;
 
-            morgen.render(name, data, context.element, callback),
+            morgen.render(name, data, context.element, callback);
             context.element.setAttribute('data-tainted', '');
 
             return context.element;
@@ -296,10 +295,8 @@
         // Start the controller with the specified context.
         morgen.getDB(function (db) {
             context.db = db;
-
             controller(context);
             on();
-            // console.log('[core] loaded new controller', name, 'in', element);
         });
 
         return context;

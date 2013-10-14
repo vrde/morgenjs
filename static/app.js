@@ -21,9 +21,6 @@
         details = load('itemdetails', main.$('[data-scope="itemdetails"]'), { id: '0' });
     });
 
-    load('init_db');
-    load('app');
-
 }) (window.morgen.register,
     window.morgen.load,
     window.morgen.remove,

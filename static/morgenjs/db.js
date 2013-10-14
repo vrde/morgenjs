@@ -11,7 +11,6 @@
 
 
     getDB = function (onsuccess) {
-
         if (!dbName || !dbVersion) {
             console.info('Cannot find dbName or dbVersion, did you call morgen.initDB?');
             onsuccess();
@@ -19,7 +18,6 @@
         }
 
         if (typeof(db) != "undefined") {
-            console.debug("DB::Reusing connection");
             onsuccess(db);
             return;
         }
@@ -32,13 +30,10 @@
 
         request.onsuccess = function(e) {
             db = e.target.result;
-
-            console.debug("DB::OK");
             onsuccess(db);
         };
 
         request.onupgradeneeded = function(e) {
-            console.debug("DB::onUpgradeNeeded");
             morgen.dispatch('upgrade_db', { db: e.target.result });
         };
     };

@@ -15,7 +15,6 @@
                     buffer.push(cursor.value);
                     cursor.continue();
                 } else {
-                    console.log('XXXXXXXXXXXXXXX');
                     dispatch('db:all', buffer);
                 }
             };

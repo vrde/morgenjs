@@ -17,8 +17,8 @@
             }
         };
 
+
         c.render('list');
-                console.debug('LOADLOADLOADLOADLOAD');
         model.all(c.db);
 
     });

@@ -12,7 +12,6 @@
     // Load the history controller
     load('__morgen_history');
 
-
 }) (window.morgen.load,
     window.morgen.dispatch);
 
