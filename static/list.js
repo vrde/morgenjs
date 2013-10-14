@@ -1,21 +1,25 @@
-(function (register, load, create, uid) {
+(function (register, load, create, uid, model) {
 
     register('list', function (c) {
 
         c.events = {
-            'click a': function (e) { console.log('clicking on', e.target); },
             'submit form': function (e) {
                 var value = c.$("input").value;
-                c.element.appendChild(create('item', { id: uid(), value: value }).element);
+                model.add(c.db, { value: value });
                 e.preventDefault();
+            },
+
+            'db:all': function (e) {
+                console.debug('***');
+                for (var i = 0; i < 1; i++)
+                    c.element.appendChild(
+                        create('item', { id: i, value: 'Hello ' + i }).element);
             }
         };
 
         c.render('list');
-
-        for (var i = 0; i < 5; i++)
-            c.element.appendChild(
-                create('item', { id: i, value: 'Hello ' + i }).element);
+                console.debug('LOADLOADLOADLOADLOAD');
+        model.all(c.db);
 
     });
 
@@ -23,5 +27,6 @@
 }) (window.morgen.register,
     window.morgen.load,
     window.morgen.create,
-    window.morgen.uid);
+    window.morgen.uid,
+    window.myapp.model);
 

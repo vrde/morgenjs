@@ -73,7 +73,7 @@
 
                 // And calculate the objects to which the events are added.
                 // If a `scope` has been defined, use it.
-                objects = scope || context.element.querySelectorAll(query);
+                objects = scope || (query && context.element.querySelectorAll(query)) || [morgen.hub];
 
                 // Attach, or detach, the listener to every object found.
                 for (j = 0; j < objects.length; j++) {
@@ -93,7 +93,7 @@
 
                             // attach the event to the DOM element
                             objects[j].addEventListener(eventNames[k], callback);
-                            console.log('[core] -- addEventListener', eventNames[k], objects[j]);
+                            //console.log('[core] -- addEventListener', eventNames[k], objects[j]);
 
                             __morgen.totalListeners++;
                         } else {
@@ -101,16 +101,15 @@
                             if (listenerIndex != -1) {
                                 // remove the event to the DOM element
                                 objects[j].removeEventListener(eventNames[k], callback);
-                                console.log('[core] -- removeEventListener', eventNames[k], objects[j]);
+                                //console.log('[core] -- removeEventListener', eventNames[k], objects[j]);
 
                                 nodeListeners[eventNames[k]].splice(listenerIndex, 1);
                                 __morgen.totalListeners--;
                             }
                         }
-                        //console.log('[core]', action, eventNames[k], 'to', objects[j]);
-
                     }
                 }
+
             }
         }
     };
@@ -208,7 +207,6 @@
             if (ctx.routes) {
                 router = morgen.createRouter(ctx.routes);
                 ctx.events.push({
-                    '_scope': morgen.hub,
                     'route': function (e) { router(e.detail.href); }
                 });
             }
@@ -287,6 +285,8 @@
 
             remove : remove,
             extras : extras,
+
+            db     : null,
             cleanup: null,
             events : null,
             routes : null
@@ -294,11 +294,13 @@
 
 
         // Start the controller with the specified context.
-        controller(context);
+        morgen.getDB(function (db) {
+            context.db = db;
 
-        on();
-
-        console.log('[core] loaded new controller', name, 'in', element);
+            controller(context);
+            on();
+            // console.log('[core] loaded new controller', name, 'in', element);
+        });
 
         return context;
     };
