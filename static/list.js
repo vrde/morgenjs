@@ -1,4 +1,4 @@
-(function (register, load, create, uid, model) {
+(function (register, load, create, uid, remove, model) {
 
     register('list', function (c) {
 
@@ -23,6 +23,13 @@
             'db:add': function (e) {
                 var r = e.detail;
                 c.element.appendChild(create('item', { id: r.id, value: r.value }).element);
+            },
+
+            'db:del': function (e) {
+                var id   = e.detail,
+                    item = c.element.querySelector('[data-item_id="' + id + '"]');
+
+                remove(item);
             }
         };
 
@@ -37,5 +44,6 @@
     window.morgen.load,
     window.morgen.create,
     window.morgen.uid,
+    window.morgen.remove,
     window.myapp.model);
 

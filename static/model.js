@@ -26,7 +26,18 @@
                 request = objectStore.put(data);
 
             request.onsuccess = function(e) {
-                dispatch('db:add', e.target.result);
+                data.id = e.target.result;
+                dispatch('db:add', data);
+            };
+        },
+
+        del: function(db, id) {
+            var transaction = db.transaction("links", "readwrite"),
+                objectStore = transaction.objectStore("links"),
+                request = objectStore.delete(id);
+
+            request.onsuccess = function(e) {
+                dispatch('db:del', id);
             };
         }
 
