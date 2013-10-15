@@ -10,7 +10,7 @@
             },
 
             'db:all': function (e) {
-                var list = e.detail.results,
+                var list = e.detail,
                     r;
 
                 for (var i = 0; i < list.length; i++) {
@@ -18,6 +18,11 @@
                     c.element.appendChild(
                         create('item', { id: r.id, value: r.value }).element);
                 }
+            },
+
+            'db:add': function (e) {
+                var r = e.detail;
+                c.element.appendChild(create('item', { id: r.id, value: r.value }).element);
             }
         };
 
