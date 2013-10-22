@@ -3,8 +3,8 @@
 Usage:
     morgen serve [--root=<PATH>] [--templates=<PATH>]
 
---root=<PATH>          specify the root directory to serve [default: static]
---templates=<PATH>     specify templates directory [default: static/templates]
+--root=<PATH>          specify the root directory to serve [default: app]
+--templates=<PATH>     specify templates directory [default: app/templates]
 
 """
 
@@ -103,12 +103,13 @@ class TemplateHandler(tornado.web.RequestHandler):
 def make_application(args):
     root = args['--root']
     templates = args['--templates']
+    print root
 
     application = tornado.web.Application([
             (r'^/__morgen/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'static') }),
             (r'^/__morgen_test/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'test') }),
 
-            (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': templates  }),
+            (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': templates }),
             (r'^/static/(.*)', tornado.web.StaticFileHandler, { 'path': root }),
             (r'^/ws$', WSHandler),
             (r'.*', MainHandler),
