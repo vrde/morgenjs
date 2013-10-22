@@ -85,10 +85,13 @@
             expect(mock0).toHaveBeenCalledWith('42', { foo: 'bar' });
 
             router('/post/42/page-1?foo=bar&baz=1');
-            expect(mock1).toHaveBeenCalledWith('42', '1', { foo: 'bar' });
+            expect(mock1).toHaveBeenCalledWith('42', '1', { foo: 'bar', baz: '1' });
 
             router('/post/42/page-1?foo=bar');
             expect(mock1).toHaveBeenCalledWith('42', '1', { foo: 'bar' });
+
+            router('/post/10-test?foo=bar');
+            expect(mock2).toHaveBeenCalledWith('10', { foo: 'bar' });
         });
 
     });
