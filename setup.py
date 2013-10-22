@@ -3,7 +3,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name         = 'MorgenJS',
+    name         = 'Morgen',
     version      = '0.1',
     description  = 'A simple tool to help your JS development',
     url          = '',
@@ -17,13 +17,14 @@ setup(
 
     entry_points = {
         'console_scripts': [
-            'morgencli = server:main',
+            'morgen = server:main',
         ],
     },
 
     install_requires = [
         'tornado',
-        'watchdog'
+        'watchdog',
+        'docopt'
     ]
 )
 

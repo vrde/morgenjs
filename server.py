@@ -1,3 +1,13 @@
+"""Morgen.
+
+Usage:
+    morgen serve [--root=<PATH>] [--templates=<PATH>]
+
+--root=<PATH>          specify the root directory to serve [default: static]
+--templates=<PATH>     specify templates directory [default: static/templates]
+
+"""
+
 import os
 from datetime import datetime, timedelta
 import logging
@@ -14,6 +24,7 @@ import tornado.log
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+from docopt import docopt
 
 wss = []
 
@@ -60,7 +71,8 @@ class MainHandler(tornado.web.RequestHandler):
         self.index = local_loader.load('index.html')
 
     def get(self):
-        self.render('index.html', morgen=self.head_fragment.generate())
+        self.write(self.index.generate(morgen=self.head_fragment.generate()))
+        self.finish()
 
 
 
@@ -88,11 +100,16 @@ class TemplateHandler(tornado.web.RequestHandler):
 
 
 
-def make_application():
+def make_application(args):
+    root = args['--root']
+    templates = args['--templates']
+
     application = tornado.web.Application([
-            (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': 'static/templates' }),
-            (r'^/static/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'static')}),
-            (r'^/test/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'test')}),
+            (r'^/__morgen/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'static') }),
+            (r'^/__morgen_test/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'test') }),
+
+            (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': templates  }),
+            (r'^/static/(.*)', tornado.web.StaticFileHandler, { 'path': root }),
             (r'^/ws$', WSHandler),
             (r'.*', MainHandler),
         ],
@@ -137,8 +154,9 @@ def run_server(application):
     tornado.ioloop.IOLoop.instance().start()
 
 def main():
+    args = docopt(__doc__, version='Morgen 0.1')
     start_watching()
-    app = make_application()
+    app = make_application(args)
     run_server(app)
 
 
