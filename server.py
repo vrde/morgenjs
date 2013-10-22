@@ -6,6 +6,7 @@ import string
 
 import tornado.httpserver
 import tornado.websocket
+import tornado.template
 import tornado.ioloop
 import tornado.web
 import tornado.log
@@ -47,8 +48,19 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 
 class MainHandler(tornado.web.RequestHandler):
+
+    def initialize(self):
+        morgen_loader = tornado.template.Loader(
+                    os.path.join(os.path.dirname(__file__),
+                    'templates'))
+
+        local_loader = tornado.template.Loader(os.getcwd())
+
+        self.head_fragment = morgen_loader.load('head_fragment.html')
+        self.index = local_loader.load('index.html')
+
     def get(self):
-        self.render('index.html')
+        self.render('index.html', morgen=self.head_fragment.generate())
 
 
 
@@ -85,8 +97,7 @@ def make_application():
             (r'.*', MainHandler),
         ],
 
-        debug=True,
-        template_path=os.path.join(os.path.dirname(__file__), "templates")
+        debug=True
     )
 
     return application

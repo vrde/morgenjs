@@ -1,9 +1,12 @@
-(function (load) {
+(function (load, run) {
 
     load('init_db');
     load('app');
 
     window.myapp = window.myapp || {};
 
-}) (window.morgen.load);
+    run({ watch: true });
+
+}) (window.morgen.load,
+    window.morgen.run);
 
