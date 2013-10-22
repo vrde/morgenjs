@@ -7,6 +7,20 @@
         RULE = 0,
         FUNC = 1,
 
+        parseParams = function (query) {
+            // http://stackoverflow.com/a/2880929
+            var match,
+                pl     = /\+/g,  // Regex for replacing addition symbol with a space
+                search = /([^&=]+)=?([^&]*)/g,
+                decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+                urlParams = {};
+
+            while (match = search.exec(query))
+                urlParams[decode(match[1])] = decode(match[2]);
+
+            return urlParams;
+        },
+
         // Transform a string to a function implementing the rule.
         // E.g. from "post/:date/:id" to a function able to match
         // strings with the same pattern.
@@ -14,7 +28,11 @@
             var re = new RegExp('^' + rule.replace(/:\w+/g, '(\\w+)') + '$', 'g');
 
             return function (path) {
-                var match = re.exec(path);
+                var tokens = path.split('?'),
+                    loc    = tokens[0],
+                    query  = tokens[1],
+                    match = re.exec(loc),
+                    params;
 
                 // This allows to reuse the regexp
                 re.lastIndex = 0;
@@ -23,6 +41,12 @@
                     return;
 
                 match.shift();
+
+                if (query)
+                    params = parseParams(query);
+
+                if (params)
+                    match.push(params);
 
                 return match;
             };

@@ -67,6 +67,30 @@
             expect(mock2).toHaveBeenCalledWith('11');
         });
 
+        it('transforms parameters into a nice dictionary', function () {
+            var mock0, mock1, mock2, router;
+
+            mock0 = createSpy('mock0');
+            mock1 = createSpy('mock1');
+            mock2 = createSpy('mock2');
+
+
+            router = createRouter([
+                ['/post/:id'           , mock0],
+                ['/post/:id/page-:page', mock1],
+                ['/post/:id-test'      , mock2]
+            ]);
+
+            router('/post/42?foo=bar');
+            expect(mock0).toHaveBeenCalledWith('42', { foo: 'bar' });
+
+            router('/post/42/page-1?foo=bar&baz=1');
+            expect(mock1).toHaveBeenCalledWith('42', '1', { foo: 'bar' });
+
+            router('/post/42/page-1?foo=bar');
+            expect(mock1).toHaveBeenCalledWith('42', '1', { foo: 'bar' });
+        });
+
     });
 
 
