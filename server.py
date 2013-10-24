@@ -2,9 +2,13 @@
 
 Usage:
     morgen serve [--root=<PATH>] [--templates=<PATH>]
+                 [--address=<ADDRESS>] [--port=<PORT>]
 
---root=<PATH>          specify the root directory to serve [default: app]
---templates=<PATH>     specify templates directory [default: app/templates]
+
+--root=<PATH>           specify the root directory to serve [default: app]
+--templates=<PATH>      specify templates directory [default: app/templates]
+--address=<ADDRESS>     bind the listen socket to the specified address: [default: 0.0.0.0]
+--port=<PORT>           listen to the specified port: [default: 8888]
 
 """
 
@@ -103,16 +107,24 @@ class TemplateHandler(tornado.web.RequestHandler):
 def make_application(args):
     root = args['--root']
     templates = args['--templates']
-    print root
 
     application = tornado.web.Application([
-            (r'^/__morgen/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'static') }),
-            (r'^/__morgen_test/(.*)', tornado.web.StaticFileHandler, { 'path': os.path.join(os.path.dirname(__file__), 'test') }),
+            # Core JS files and tests
+            (r'^/__morgen/(.*)', tornado.web.StaticFileHandler,
+                                 { 'path': os.path.join(os.path.dirname(__file__), 'static') }),
+            (r'^/__morgen_test/(.*)', tornado.web.StaticFileHandler,
+                                 { 'path': os.path.join(os.path.dirname(__file__), 'test') }),
 
+
+            # Application templates and static resources
             (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': templates }),
             (r'^/static/(.*)', tornado.web.StaticFileHandler, { 'path': root }),
+
+
+            # Websockets and main handler
             (r'^/ws$', WSHandler),
             (r'.*', MainHandler),
+
         ],
 
         debug=True
@@ -148,17 +160,19 @@ def start_watching(path='.'):
     return handler
 
 
-def run_server(application):
+def run_server(application, args):
+    port, address = int(args['--port']), args['--address']
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(8888)
+    http_server.listen(port, address)
     tornado.log.enable_pretty_logging()
+    logging.info('Morgen server listening on {}:{}'.format(address, port))
     tornado.ioloop.IOLoop.instance().start()
 
 def main():
     args = docopt(__doc__, version='Morgen 0.1')
     start_watching()
     app = make_application(args)
-    run_server(app)
+    run_server(app, args)
 
 
 if __name__ == '__main__':
