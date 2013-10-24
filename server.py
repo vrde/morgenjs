@@ -1,8 +1,8 @@
-"""Morgen.
+"""
+Morgen.
 
 Usage:
-    morgen serve [--root=<PATH>] [--templates=<PATH>]
-                 [--address=<ADDRESS>] [--port=<PORT>]
+    morgen [--root=<PATH>] [--templates=<PATH>] [--address=<ADDRESS>] [--port=<PORT>]
 
 
 --root=<PATH>           specify the root directory to serve [default: app]
@@ -195,11 +195,15 @@ def run_server(application, args):
     tornado.ioloop.IOLoop.instance().start()
 
 
-def main():
-    args = docopt(__doc__, version='Morgen 0.1')
+def serve(args):
     start_watching()
     app = make_application(args)
     run_server(app, args)
+
+
+def main():
+    args = docopt(__doc__, version='Morgen 0.1')
+    serve(args)
 
 
 if __name__ == '__main__':
