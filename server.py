@@ -81,7 +81,10 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 class MainHandler(tornado.web.RequestHandler):
     """Serve the index.html file, adding the Morgen javascript library."""
 
-    def initialize(self):
+    def initialize(self, root, templates):
+        self.root = root
+        self.templates = templates
+
         morgen_loader = tornado.template.Loader(
                     os.path.join(os.path.dirname(__file__),
                     'templates'))
@@ -93,7 +96,10 @@ class MainHandler(tornado.web.RequestHandler):
 
 
     def get(self):
-        self.write(self.index.generate(morgen=self.head_fragment.generate()))
+        self.write(self.index.generate(
+            morgen=self.head_fragment.generate(),
+            root=self.root,
+            templates=self.templates))
         self.finish()
 
 
@@ -143,13 +149,13 @@ def make_application(args):
 
 
             # Application templates and static resources
-            (r'^/static/templates/(.*).html$', TemplateHandler, {'template_path': templates }),
-            (r'^/static/(.*)', tornado.web.StaticFileHandler, { 'path': root }),
+            (r'^/{}/(.*).html$'.format(templates), TemplateHandler, {'template_path': templates }),
+            (r'^/{}/(.*)'.format(root), tornado.web.StaticFileHandler, { 'path': root }),
 
 
             # Websockets and main handler
             (r'^/ws$', WSHandler),
-            (r'.*', MainHandler),
+            (r'.*', MainHandler, { 'root': root, 'templates': templates }),
 
         ],
 
