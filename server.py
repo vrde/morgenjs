@@ -34,13 +34,22 @@ wss = []
 
 
 def ws_send(message, sender=None):
+    """Utility function to send a message to all the clients
+    connected. It will skip the `sender` if it is set."""
+
     for ws in wss:
         if sender != ws:
             ws.write_message(message)
 
 
+
 class WSHandler(tornado.websocket.WebSocketHandler):
+    """Handle the websocket connections"""
+
+
     def open(self):
+        """Open a new connection and add it to the set of clients"""
+
         ua = self.request.headers.get('User-Agent')
         ip = self.request.remote_ip
 
@@ -48,11 +57,18 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         if self not in wss:
             wss.append(self)
 
+
     def on_message(self, message):
+        """Broadcast a message to all the clients connected but not the
+        client originating the request."""
+
         logging.info('received message: {}'.format(message))
         ws_send(message, self)
 
+
     def on_close(self):
+        """Remove a client from the list of connected clients"""
+
         ua = self.request.headers.get('User-Agent')
         ip = self.request.remote_ip
 
@@ -63,6 +79,7 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 
 
 class MainHandler(tornado.web.RequestHandler):
+    """Serve the index.html file, adding the Morgen javascript library."""
 
     def initialize(self):
         morgen_loader = tornado.template.Loader(
@@ -74,6 +91,7 @@ class MainHandler(tornado.web.RequestHandler):
         self.head_fragment = morgen_loader.load('head_fragment.html')
         self.index = local_loader.load('index.html')
 
+
     def get(self):
         self.write(self.index.generate(morgen=self.head_fragment.generate()))
         self.finish()
@@ -81,19 +99,27 @@ class MainHandler(tornado.web.RequestHandler):
 
 
 class TemplateHandler(tornado.web.RequestHandler):
+    """Encapsulate a template into a javascript structure."""
+
     TMPL = u'morgen.registerTemplate("%s", "%s");'
+
 
     def initialize(self, template_path):
         self.template_path = template_path
 
+
     def compile(self, name, template):
+        """Create a javascript string from an HTML template"""
+
         template = template.replace('"', '\\"')
         template = u' '.join(map(string.lstrip, filter(bool, template.split('\n'))))
         template = self.TMPL % (name, template)
 
         return template
 
+
     def get(self, path):
+        """Read and compile a template resource"""
         fullpath = os.path.join(self.template_path, path + '.html')
         try:
             template = codecs.open(fullpath, 'r').read()
@@ -167,6 +193,7 @@ def run_server(application, args):
     tornado.log.enable_pretty_logging()
     logging.info('Morgen server listening on {}:{}'.format(address, port))
     tornado.ioloop.IOLoop.instance().start()
+
 
 def main():
     args = docopt(__doc__, version='Morgen 0.1')
