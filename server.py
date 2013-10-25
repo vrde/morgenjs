@@ -2,11 +2,10 @@
 Morgen.
 
 Usage:
-    morgen [--root=<PATH>] [--templates=<PATH>] [--address=<ADDRESS>] [--port=<PORT>]
+    morgen [--root=<PATH>] [--address=<ADDRESS>] [--port=<PORT>]
 
 
 --root=<PATH>           specify the root directory to serve [default: app]
---templates=<PATH>      specify templates directory [default: app/templates]
 --address=<ADDRESS>     bind the listen socket to the specified address: [default: 0.0.0.0]
 --port=<PORT>           listen to the specified port: [default: 8888]
 
@@ -81,9 +80,8 @@ class WSHandler(tornado.websocket.WebSocketHandler):
 class MainHandler(tornado.web.RequestHandler):
     """Serve the index.html file, adding the Morgen javascript library."""
 
-    def initialize(self, root, templates):
+    def initialize(self, root):
         self.root = root
-        self.templates = templates
 
         morgen_loader = tornado.template.Loader(
                     os.path.join(os.path.dirname(__file__),
@@ -98,8 +96,7 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.write(self.index.generate(
             morgen=self.head_fragment.generate(),
-            root=self.root,
-            templates=self.templates))
+            root=self.root))
         self.finish()
 
 
@@ -110,8 +107,8 @@ class TemplateHandler(tornado.web.RequestHandler):
     TMPL = u'morgen.registerTemplate("%s", "%s");'
 
 
-    def initialize(self, template_path):
-        self.template_path = template_path
+    def initialize(self, root):
+        self.root = root
 
 
     def compile(self, name, template):
@@ -124,9 +121,9 @@ class TemplateHandler(tornado.web.RequestHandler):
         return template
 
 
-    def get(self, path):
+    def get(self, tmpl_root, path):
         """Read and compile a template resource"""
-        fullpath = os.path.join(self.template_path, path + '.html')
+        fullpath = os.path.join(self.root, tmpl_root, path + '.html')
         try:
             template = codecs.open(fullpath, 'r').read()
         except:
@@ -138,7 +135,6 @@ class TemplateHandler(tornado.web.RequestHandler):
 
 def make_application(args):
     root = args['--root']
-    templates = args['--templates']
 
     application = tornado.web.Application([
             # Core JS files and tests
@@ -149,13 +145,13 @@ def make_application(args):
 
 
             # Application templates and static resources
-            (r'^/{}/(.*).html$'.format(templates), TemplateHandler, {'template_path': templates }),
+            (r'^/{}/([^\/]*)/(.*).html$'.format(root), TemplateHandler, { 'root': root }),
             (r'^/{}/(.*)'.format(root), tornado.web.StaticFileHandler, { 'path': root }),
 
 
             # Websockets and main handler
             (r'^/ws$', WSHandler),
-            (r'.*', MainHandler, { 'root': root, 'templates': templates }),
+            (r'.*', MainHandler, { 'root': root }),
 
         ],
 
