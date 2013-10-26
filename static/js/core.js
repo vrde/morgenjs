@@ -147,7 +147,7 @@
     morgen.load = function (name, selector, extras) {
         var context, element, controller,
             on, off, getValue, setValue,
-            remove, innerRender, innerQuerySelector,
+            remove, innerRender, innerQuerySelector, innerQuerySelectorAll,
             unwrap;
 
         if (selector === undefined)
@@ -193,14 +193,11 @@
 
 
         innerQuerySelector = function (query) {
-            var elements = element.querySelectorAll(query);
+            return element.querySelector(query);
+        };
 
-            if (!elements.length)
-                return;
-            else if (elements.length == 1)
-                return elements[0];
-
-            return elements;
+        innerQuerySelectorAll = function (query) {
+            return element.querySelectorAll(query);
         };
 
 
@@ -294,7 +291,8 @@
 
         // Initialize the context.
         context = {
-            $      : innerQuerySelector,
+            $      : innerQuerySelectorAll,
+            $$     : innerQuerySelector,
             name   : name,
             element: element,
             render : innerRender,

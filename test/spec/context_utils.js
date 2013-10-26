@@ -29,12 +29,12 @@
 
             c.set('foo', 42);
             expect(c.get('foo')).toBe('42');
-            expect(c.$('span').textContent).toBe('42');
+            expect(c.$('span')[0].textContent).toBe('42');
             expect(c.$('input')[0].value).toBe('42');
 
             c.set('foo', function (v) { return parseInt(v) + 1; });
             expect(c.get('foo')).toBe('43');
-            expect(c.$('span').textContent).toBe('43');
+            expect(c.$('span')[0].textContent).toBe('43');
             expect(c.$('input')[0].value).toBe('43');
 
             c.set('bar', 101);
