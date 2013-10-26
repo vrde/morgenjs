@@ -169,7 +169,8 @@
 
         // Helper function to render a template against data
         innerRender = function (name, data, callback) {
-            var ctx = context;
+            var ctx = context,
+                newElement, __morgenContexts;
 
             // if there are some old listeners already binded,
             // remove them
@@ -179,25 +180,35 @@
             // Remember where the template has been used
             if (!__morgen.tmpl2ctrl[name])
                 __morgen.tmpl2ctrl[name] = { };
-            __morgen.tmpl2ctrl[name][context.name] = true;
+            __morgen.tmpl2ctrl[name][ctx.name] = true;
 
-            morgen.render(name, data, context.element, callback);
+            morgen.render(name, data, ctx.element, callback);
 
-            if (unwrap)
-                context.element = context.element.firstChild;
+            if (unwrap) {
+                ctx.element = ctx.element.firstChild;
+            } else if (ctx && ctx.element && ctx.element.firstChild) {
+                newElement = ctx.element.firstChild;
 
-            context.element.setAttribute('data-tainted', '');
+                ctx.element.firstChild.__morgenContexts = ctx.element.__morgenContexts;
+                ctx.element.parentNode.replaceChild(
+                    ctx.element.firstChild, ctx.element);
 
-            return context.element;
+                ctx.element = newElement;
+            }
+
+
+            ctx.element.setAttribute('morgen-has-context', '');
+
+            return ctx.element;
         };
 
 
         innerQuerySelector = function (query) {
-            return element.querySelector(query);
+            return context.element.querySelector(query);
         };
 
         innerQuerySelectorAll = function (query) {
-            return element.querySelectorAll(query);
+            return context.element.querySelectorAll(query);
         };
 
 
@@ -281,7 +292,7 @@
 
             off(ctx);
 
-            children = ctx.element.querySelectorAll('[data-tainted]');
+            children = ctx.element.querySelectorAll('[morgen-has-context]');
             for (i = 0; i < children.length; i++)
                 for (key in children[i].__morgenContexts)
                     children[i].__morgenContexts[key].off();
@@ -308,7 +319,9 @@
             db     : null,
             cleanup: null,
             events : null,
-            routes : null
+            routes : null,
+
+            __unwrap: unwrap
         };
 
 
