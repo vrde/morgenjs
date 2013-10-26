@@ -254,13 +254,15 @@
         };
 
         setValue = function (modelName, value) {
-            var elems = context.element.querySelectorAll('[data-model="' + modelName + '"]'),
+            var elems    = context.element.querySelectorAll('[data-model="' + modelName + '"]'),
+                oldValue = getValue(modelName),
+                newValue = typeof value == "function" ? value(oldValue) : value,
                 i, tag, prop, elem;
 
             for (i = 0, elem = elems[0]; elem; elem = elems[++i]) {
                 tag  = elem.tagName.toLowerCase(),
                 prop = tag == 'input' ? 'value' : 'textContent';
-                elem[prop] = value;
+                elem[prop] = newValue;
             }
         };
 
