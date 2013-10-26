@@ -240,17 +240,21 @@
         };
 
         setValue = function (modelName, value) {
-            var modelElem = context.element.querySelector('[data-model="' + modelName + '"]');
+            var elem = context.element.querySelector('[data-model="' + modelName + '"]'),
+                tag  = elem.tagName.toLowerCase(),
+                prop = tag == 'input' ? 'value' : 'textContent';
 
-            if (modelElem)
-                modelElem.textContent = value;
+            if (elem)
+                elem[prop] = value;
         };
 
         getValue = function (modelName) {
-            var modelElem = context.element.querySelector('[data-model="' + modelName + '"]');
+            var elem = context.element.querySelector('[data-model="' + modelName + '"]'),
+                tag  = elem.tagName.toLowerCase(),
+                prop = tag == 'input' ? 'value' : 'textContent';
 
-            if (modelElem)
-                return modelElem.textContent;
+            if (elem)
+                return elem[prop];
         };
 
         // Remove the Node from the DOM.

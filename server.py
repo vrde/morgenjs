@@ -87,7 +87,7 @@ class MainHandler(tornado.web.RequestHandler):
                     os.path.join(os.path.dirname(__file__),
                     'templates'))
 
-        local_loader = tornado.template.Loader(os.getcwd())
+        local_loader = tornado.template.Loader(self.root)
 
         self.head_fragment = morgen_loader.load('head_fragment.html')
         self.index = local_loader.load('index.html')
@@ -140,6 +140,9 @@ def make_application(args):
             # Core JS files and tests
             (r'^/__morgen/(.*)', tornado.web.StaticFileHandler,
                                  { 'path': os.path.join(os.path.dirname(__file__), 'static') }),
+            (r'^/__morgen_test/index.html', MainHandler,
+                                 { 'root': os.path.join(os.path.dirname(__file__), 'test') }),
+
             (r'^/__morgen_test/(.*)', tornado.web.StaticFileHandler,
                                  { 'path': os.path.join(os.path.dirname(__file__), 'test') }),
 
@@ -175,13 +178,21 @@ class FSEventHandler(FileSystemEventHandler):
 
         if not last or now - last > self.THRESHOLD:
             logging.info('firing event for {}'.format(src))
-            ws_send(src[len(self.root):]);
+            ws_send(src[len(self.root):])
             self.debounce[src] = now
 
 
 def start_watching(path='.'):
+    test_path = os.path.join(os.path.dirname(__file__), 'test/')
+    morgen_path = os.path.join(os.path.dirname(__file__), 'static/')
+
+    test_handler = FSEventHandler(test_path)
+    morgen_handler = FSEventHandler(morgen_path)
     handler  = FSEventHandler(os.getcwd())
+
     observer = Observer()
+    observer.schedule(test_handler, test_path, recursive=True)
+    observer.schedule(morgen_handler, morgen_path, recursive=True)
     observer.schedule(handler, path, recursive=True)
     observer.start()
 
