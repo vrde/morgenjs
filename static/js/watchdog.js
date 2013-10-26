@@ -51,7 +51,7 @@
 
             // Still hardcoded, will be better one day.
             // If the index has changed, reload everything.
-            if (window.location.pathname == '/__morgen_test/index.html')
+            if (filename.match(/index\.html/))
                 window.location.reload();
 
             // If the DOM contains an element that loaded the
