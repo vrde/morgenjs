@@ -186,7 +186,14 @@
 
 
         innerQuerySelector = function (query) {
-            return element.querySelector(query);
+            var elements = element.querySelectorAll(query);
+
+            if (!elements.length)
+                return;
+            else if (elements.length == 1)
+                return elements[0];
+
+            return elements;
         };
 
 
@@ -240,12 +247,14 @@
         };
 
         setValue = function (modelName, value) {
-            var elem = context.element.querySelector('[data-model="' + modelName + '"]'),
+            var elems = context.element.querySelectorAll('[data-model="' + modelName + '"]'),
+                i, tag, prop, elem;
+
+            for (i = 0, elem = elems[0]; elem; elem = elems[++i]) {
                 tag  = elem.tagName.toLowerCase(),
                 prop = tag == 'input' ? 'value' : 'textContent';
-
-            if (elem)
                 elem[prop] = value;
+            }
         };
 
         getValue = function (modelName) {
