@@ -147,15 +147,18 @@
     morgen.load = function (name, selector, extras) {
         var context, element, controller,
             on, off, getValue, setValue,
-            remove, innerRender, innerQuerySelector;
+            remove, innerRender, innerQuerySelector,
+            unwrap;
 
         if (selector === undefined)
             selector = 'html';
 
         element = typeof selector == 'string' ? document.querySelector(selector) : selector;
 
-        if (!element)
+        if (!element) {
             element = document.createElement('div');
+            unwrap  = true;
+        }
 
         controller = __morgen.controllers[name];
 
@@ -179,6 +182,10 @@
             __morgen.tmpl2ctrl[name][context.name] = true;
 
             morgen.render(name, data, context.element, callback);
+
+            if (unwrap)
+                context.element = context.element.firstChild;
+
             context.element.setAttribute('data-tainted', '');
 
             return context.element;
