@@ -125,7 +125,7 @@ class TemplateHandler(tornado.web.RequestHandler):
         """Read and compile a template resource"""
         fullpath = os.path.join(self.root, tmpl_root, path + '.html')
         try:
-            template = codecs.open(fullpath, 'r').read()
+            template = codecs.open(fullpath, 'r', 'utf8').read()
         except:
             raise tornado.web.HTTPError(404)
 

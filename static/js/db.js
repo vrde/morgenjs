@@ -12,7 +12,6 @@
 
     getDB = function (onsuccess) {
         if (!dbName || !dbVersion) {
-            console.info('Cannot find dbName or dbVersion, did you call morgen.initDB?');
             onsuccess();
             return;
         }
@@ -25,7 +24,7 @@
         var request = indexedDB.open(dbName, dbVersion);
 
         request.onerror = function(e) {
-            console.error("DB::Can't open IndexedDB!!!", e);
+            console.error('Can\'t open IndexedDB!!!', e);
         };
 
         request.onsuccess = function(e) {

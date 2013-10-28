@@ -174,8 +174,10 @@
 
             // if there are some old listeners already binded,
             // remove them
-            if (ctx && ctx.element && ctx.element.__morgenContexts)
-                off(ctx.element.__morgenContexts[name]);
+            if (ctx && ctx.element
+                    && ctx.element.__morgenContexts
+                    && ctx.element.__morgenContexts[ctx.name])
+                off(ctx.element.__morgenContexts[ctx.name]);
 
             // Remember where the template has been used
             if (!__morgen.tmpl2ctrl[name])
@@ -186,7 +188,7 @@
 
             if (unwrap) {
                 ctx.element = ctx.element.firstChild;
-            } else if (ctx && ctx.element && ctx.element.firstChild) {
+            } else if (ctx && ctx.element && ctx.__unwrap && ctx.element.firstChild) {
                 newElement = ctx.element.firstChild;
 
                 ctx.element.firstChild.__morgenContexts = ctx.element.__morgenContexts;
@@ -234,8 +236,10 @@
 
             // if there are some old listeners already binded,
             // remove them
-            if (ctx && ctx.element && ctx.element.__morgenContexts)
-                off(ctx.element.__morgenContexts[name]);
+            if (ctx && ctx.element
+                    && ctx.element.__morgenContexts
+                    && ctx.element.__morgenContexts[ctx.name])
+                off(ctx.element.__morgenContexts[ctx.name]);
 
 
             // bind the new listeners
@@ -255,6 +259,15 @@
         // Remove the events from the context.
         off = function (ctx) {
             ctx = ctx || context;
+
+            // FIXME: this needs more love. Handling recursive
+            // context handling is quite tricky
+            var children = ctx.element.querySelectorAll('[morgen-has-context]'),
+                i, key;
+            for (i = 0; i < children.length; i++)
+                for (key in children[i].__morgenContexts)
+                    children[i].__morgenContexts[key].off();
+
 
             delete __morgen.contexts[ctx.name][ctx.uid];
             if (ctx.cleanup) ctx.cleanup();
@@ -363,7 +376,6 @@
         }
 
         setTimeout(function () {
-            console.log(reloaded);
             for (var i = 0; i < reloaded.length; i++)
                 reloaded[i].classList.remove('__morgen-reload');
         }, 1000);
