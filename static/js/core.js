@@ -146,7 +146,7 @@
     //
     morgen.load = function (name, selector, extras) {
         var context, element, controller,
-            on, off, getValue, setValue,
+            on, off, getValue, setValue, proxy,
             remove, innerRender, innerQuerySelector, innerQuerySelectorAll,
             unwrap;
 
@@ -213,6 +213,16 @@
             return context.element.querySelectorAll(query);
         };
 
+        proxy = function (query) {
+            var elems = context.element.querySelectorAll(query);
+
+            if (query)
+                elems = context.element.querySelectorAll(query);
+            else
+                elems = context.element;
+
+            return morgen.makeproxy(elems);
+        };
 
         // Add the events to the context.
         on = function (ctx) {
@@ -315,8 +325,7 @@
 
         // Initialize the context.
         context = {
-            $      : innerQuerySelectorAll,
-            $$     : innerQuerySelector,
+            $      : proxy,
             name   : name,
             element: element,
             render : innerRender,
