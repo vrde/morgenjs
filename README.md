@@ -54,3 +54,8 @@ How to run the TodoMVC example
 Hopefully, you can see the TodoMVC implementation up and running on [http://localhost:8888](http://localhost:8888).
 
 
+
+How to run the internal test suite
+----------------------------------
+Point your browser to [http://localhost:8888/__morgen_test/index.html](http://localhost:8888/__morgen_test/index.html).
+
