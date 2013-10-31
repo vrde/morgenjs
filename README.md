@@ -8,7 +8,7 @@ It is still extremely experimental, and the API is totally unstable, so don't re
 
 Why
 ===
-There are many awesome libraries/frameworks out there: [BackboneJS](http://backbonejs.org/) and [AngulaJS](http://angularjs.org/) to name a few. They are doing a great job helping with the architecture and provinding utils, bindings, and all a developer needs to build an app.
+There are many awesome libraries/frameworks out there: [BackboneJS](http://backbonejs.org/) and [AngularJS](http://angularjs.org/) to name a few. They are doing a great job helping with the architecture and provinding utils, bindings, and all a developer needs to build an app.
 
 But the **development** is still the same: edit styles, save, switch to the browser, reload; or edit the scripts, save, switch to the browser, reload; or edit the templates, save, switch to the browser, reload. I think it's a huge waste of time, for many reasons:
 - saving, switching and reloading interrupts your flow and takes time, if you are doing once is 2 seconds. If you are doing hundreds of times in a day, it's minutes, in a week of work, it's hours.
@@ -35,7 +35,9 @@ Please note that **MorgenJS is not production ready**, it's still an experiment 
 
 Requirements
 ------------
-A modern (2.7) Python interpreter, Pip or easyinstall. A virtualenv manager can be helpful.
+A modern (2.7) Python installation, [Pip](http://www.pip-installer.org/) or [easyinstall](http://pythonhosted.org/distribute/easy_install.html). A virtualenv manager can be helpful, I recommend [Pew](https://github.com/berdario/invewrapper).
+
+Take a look also to the [Python watchdog supported platforms](http://pythonhosted.org/watchdog/installation.html#supported-platforms-and-caveats). I've just tested it in my Ubuntu box and it's working, never tried a Mac OS X, will do it soon.
 
 
 
