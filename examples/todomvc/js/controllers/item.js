@@ -51,7 +51,7 @@
         };
 
 
-
+        c.render('item', c.extras);
         c.$().toggleClass('completed', c.extras.completed);
         c.$('[type="checkbox"]').checked(c.extras.completed);
     });
