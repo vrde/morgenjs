@@ -11,12 +11,12 @@ Why
 There are many awesome libraries/frameworks out there: [BackboneJS](http://backbonejs.org/) and [AngularJS](http://angularjs.org/) to name a few. They are doing a great job helping with the architecture and provinding utils, bindings, and all a developer needs to build an app.
 
 But the **development** is still the same: edit styles, save, switch to the browser, reload; or edit the scripts, save, switch to the browser, reload; or edit the templates, save, switch to the browser, reload. I think it's a huge waste of time, for many reasons:
-- saving, switching and reloading interrupts your flow and takes time, if you are doing once is 2 seconds. If you are doing hundreds of times in a day, it's minutes, in a week of work, it's hours.
-- switching and reloading destroys the **context**. The URL may help, since it's a way to keep the context, but it's not enough. Imagine you are working on a dialog, and opening a dialog requires you to follow a path in the UI. If you are reloading you need to repeat the click--flow to get to the dialog. Even worse if you have to insert some data to get to the context you need.
+- saving, switching and reloading interrupts your flow and takes time, if you are doing it once is 2 seconds. If you are doing hundreds of times in a day, it's minutes, in a week of work, it's hours.
+- switching and reloading destroys the **context**. The URL may help, since it's a way to keep the context, but it's not enough. Imagine you are working on a dialog, and opening a dialog requires you to follow a path in the UI. If you are reloading you need to repeat the click-flow to get to the dialog. Even worse if you have to insert some data to get to the context you need.
 
 If this is not enough to persuade you, what about different instances of the browser to check compatibility? And maybe you have many different devices. You should spend time coding, not clicking and tapping everywhere to debug the UI.
 
-MorgenJS tries to fix this problem, giving to the developer a nice tool to update styles, scripts and templates in real time and without reloading the app, and propagating events throughly all the devices connected.
+MorgenJS tries to fix this problem, giving to the developer a nice tool to update styles, scripts and templates in real time and without reloading the app, and propagating events through all the devices connected.
 
 
 
