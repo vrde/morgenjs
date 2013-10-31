@@ -45,12 +45,20 @@
             },
 
 
-            toggleClass: function (className) {
+            toggleClass: function (className, v) {
                 proxy.each(function (elem) {
-                    elem.classList.toggle(className);
+                    elem.classList.toggle(className, v);
                 });
 
                 return proxy;
+            },
+
+
+            focus: function () {
+                if (!elems[0])
+                    return;
+
+                return elems[0].focus();
             },
 
 
@@ -59,7 +67,7 @@
                     return;
 
                 if (value !== undefined)
-                    elems[0][property]= value;
+                    elems[0][property] = value;
 
                 return elems[0][property];
 

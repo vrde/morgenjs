@@ -108,7 +108,6 @@
                         }
                     }
                 }
-
             }
         }
     };
@@ -198,7 +197,6 @@
                 ctx.element = newElement;
             }
 
-
             ctx.element.setAttribute('morgen-has-context', '');
 
             return ctx.element;
@@ -214,10 +212,12 @@
         };
 
         proxy = function (query) {
-            var elems = context.element.querySelectorAll(query);
+            var elems;
 
-            if (query)
+            if (typeof query == "string")
                 elems = context.element.querySelectorAll(query);
+            else if (query instanceof Node)
+                elems = query;
             else
                 elems = context.element;
 
@@ -325,9 +325,11 @@
 
         // Initialize the context.
         context = {
-            $      : proxy,
             name   : name,
+
             element: element,
+            $      : proxy,
+
             render : innerRender,
             on     : on,
             off    : off,
@@ -343,7 +345,11 @@
             events : null,
             routes : null,
 
-            __unwrap: unwrap
+            // FIXME: need refactoring
+            __unwrap: unwrap || (element
+                                 && element.__morgenContexts
+                                 && element.__morgenContexts[name]
+                                 && element.__morgenContexts[name].__unwrap)
         };
 
 
@@ -439,7 +445,7 @@
 
     // Dispatch an event to all the subscribers to the `hub`.
     morgen.dispatch = function (name, payload) {
-        console.debug('[dispatch]', name, payload);
+        //console.debug('[dispatch]', name, payload);
         morgen.hub.dispatchEvent(new window.CustomEvent(name, { detail: payload }));
     };
 
