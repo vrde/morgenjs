@@ -19,6 +19,10 @@
                 return proxy;
             },
 
+            get: function (i) {
+                return proxy.array[i];
+            },
+
             appendChild: function (child) {
                 proxy.each(function (elem) {
                     elem.appendChild(child);
@@ -71,6 +75,11 @@
 
                 return elems[0][property];
 
+            },
+
+
+            setAttribute: function (property, value) {
+                return proxy.prop(property, value);
             },
 
 

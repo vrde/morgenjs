@@ -285,7 +285,8 @@
         };
 
         setValue = function (modelName, value) {
-            var elems    = context.element.querySelectorAll('[data-model="' + modelName + '"]'),
+            // Avoid all the sub contexts
+            var elems    = context.element.querySelectorAll(':not([morgen-has-context]) > [data-model="' + modelName + '"]'),
                 oldValue = getValue(modelName),
                 newValue = typeof value == "function" ? value(oldValue) : value,
                 i, tag, prop, elem;
@@ -295,10 +296,13 @@
                 prop = tag == 'input' ? 'value' : 'textContent';
                 elem[prop] = newValue;
             }
+
+            return oldValue;
         };
 
         getValue = function (modelName) {
-            var elem = context.element.querySelector('[data-model="' + modelName + '"]'),
+            // Avoid all the sub contexts
+            var elem = context.element.querySelector(':not([morgen-has-context]) > [data-model="' + modelName + '"]'),
                 tag  = elem.tagName.toLowerCase(),
                 prop = tag == 'input' ? 'value' : 'textContent';
 
