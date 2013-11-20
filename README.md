@@ -1,5 +1,8 @@
 MorgenJS
 ========
+> **Web development is broken**. Building a UI for the browser is a pain. Doing it for several devices is even worse.
+> MorgenJS is an experiment to find a new way to make apps.
+> MorgenJS explores a new field: reactive and responsive **development**.
 
 MorgenJS is a nice framework to build single page webapps.
 It is still extremely experimental, and the API is totally unstable, so don't rely on it. I just put it online to show the code to some interested people.
