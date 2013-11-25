@@ -1,0 +1,20 @@
+#main {
+    text-align: center;
+}
+
+ul {
+    margin: 0 auto;
+}
+
+li {
+    list-style: none;
+    width: 128px;
+    text-align: center;
+    display: inline-block;
+    margin: 10px;
+}
+
+li .meme {
+    width: 128px;
+    height: 128px;
+}
