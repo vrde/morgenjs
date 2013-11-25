@@ -32,9 +32,9 @@
     // Controller responsible to watch changes.
     // It creates and manage a websocket to the server.
     controller = function (c) {
-        var ws, log, onmessage, filechange;
+        var log, onmessage, filechange, bind;
 
-        ws = new WebSocket('ws://' + window.location.host + '/ws');
+        __morgen.ws = new WebSocket('ws://' + window.location.host + '/ws');
 
 
         // Nice generic function to log some events
@@ -78,22 +78,11 @@
             }
         };
 
-
-        // Register the events we need
-        c.events = {
-
-            // Hey, look, we are using the `_scope` keyword to register
-            // events on a specific object!
-            '_scope': ws,
-
-            // Here we are registering multiple events using a single
-            // callback.
-            'open,close': log,
-
-            'error': function (e) { alert('error opening websocket ' + e.type); },
-
-            // And here the main callback.
-            'message': onmessage
+        bind = function () {
+            __morgen.ws.onopen = log;
+            __morgen.ws.onerror= log;
+            __morgen.ws.onclose= log;
+            __morgen.ws.onmessage = onmessage;
         };
 
         // If we reload this controller, we need to do some manual
@@ -104,11 +93,19 @@
         // the browser event loop takes control. So no new events are
         // triggered.
         c.cleanup = function () {
-            if (ws.readyState == ws.OPEN)
-                ws.close();
+            if (__morgen.ws.readyState == WebSocket.OPEN)
+                __morgen.ws.close();
         };
 
-        __morgen.ws = ws;
+        window.setInterval(function () {
+            if (__morgen.ws.readyState != WebSocket.OPEN) {
+                console.log('[core] websocket disconnected, trying to reconnect');
+                __morgen.ws = new WebSocket('ws://' + window.location.host + '/ws');
+                __morgen.ws.onopen = bind;
+            }
+        }, 1000);
+
+        bind();
     };
 
     
