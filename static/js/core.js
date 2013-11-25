@@ -286,7 +286,7 @@
 
         setValue = function (modelName, value) {
             // Avoid all the sub contexts
-            var elems    = context.element.querySelectorAll(':not([morgen-has-context]) > [data-model="' + modelName + '"]'),
+            var elems    = context.element.querySelectorAll(':not([morgen-has-context]) [data-model="' + modelName + '"]'),
                 oldValue = getValue(modelName),
                 newValue = typeof value == "function" ? value(oldValue) : value,
                 i, tag, prop, elem;
@@ -302,7 +302,7 @@
 
         getValue = function (modelName) {
             // Avoid all the sub contexts
-            var elem = context.element.querySelector(':not([morgen-has-context]) > [data-model="' + modelName + '"]'),
+            var elem = context.element.querySelector(':not([morgen-has-context]) [data-model="' + modelName + '"]'),
                 tag  = elem.tagName.toLowerCase(),
                 prop = tag == 'input' ? 'value' : 'textContent';
 
@@ -449,7 +449,7 @@
 
     // Dispatch an event to all the subscribers to the `hub`.
     morgen.dispatch = function (name, payload) {
-        //console.debug('[dispatch]', name, payload);
+        console.debug('[dispatch]', name, payload);
         morgen.hub.dispatchEvent(new window.CustomEvent(name, { detail: payload }));
     };
 

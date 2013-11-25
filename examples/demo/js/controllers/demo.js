@@ -6,6 +6,12 @@
         var i = 0,
             meme, itemCtrl;
 
+        c.events = {
+            'vote': function (e) {
+                window.app.updateVotes(e.detail);
+            }
+        };
+
         c.render('demo');
 
         while (meme = window.app.memes[i++]) {

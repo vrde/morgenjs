@@ -1,18 +1,20 @@
-(function (morgen) {
+(function (app, morgen) {
 
 	'use strict';
 
     morgen.register('item', function (c) {
 
         c.events = {
-            'click img': function (e) {
-                window.app.votes[c.extras.id]++;
-                morgen.broadcast({ type: 'votes', data: window.app.votes });
-            }
+            'click img,touchstart img': function (e) {
+                app.castVote(c.extras.id);
+            },
+
+            'votesUpdate': function () {
+                c.set('votes', app.votes[c.extras.id]);
+            },
         };
-
+        c.extras.votes = app.votes[c.extras.id];
         c.render('item', c.extras);
-
     });
 
-})(window.morgen);
+})(window.app, window.morgen);

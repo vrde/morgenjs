@@ -63,8 +63,9 @@ class WSHandler(tornado.websocket.WebSocketHandler):
         """Broadcast a message to all the clients connected but not the
         client originating the request."""
 
+        
         logging.info('received message: {}'.format(message))
-        ws_send(message, self)
+        ws_send(tornado.escape.json_decode(message), self)
 
 
     def on_close(self):

@@ -1,4 +1,4 @@
-(function (register, load, __morgen) {
+(function (register, load, dispatch, __morgen) {
 
     // All the stuff we need to keep an eye on the file
     // changes.
@@ -52,6 +52,8 @@
                     filechange(json.payload);
                     break;
             }
+
+            dispatch(json.type, json);
         };
 
         filechange = function(filename) {
@@ -115,5 +117,6 @@
 
 }) (window.morgen.register,
     window.morgen.load,
+    window.morgen.dispatch,
     window.__morgen);
 
