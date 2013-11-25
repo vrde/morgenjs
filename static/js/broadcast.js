@@ -94,6 +94,9 @@
     }
 
     controller = function (c) {
+        // XXX: DISABLED, will work on that in the future
+        return;
+
         // Register the events we need
         c.events = [{
             '_scope': document,

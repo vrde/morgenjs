@@ -19,6 +19,7 @@ import string
 
 import tornado.httpserver
 import tornado.websocket
+import tornado.escape
 import tornado.template
 import tornado.ioloop
 import tornado.web
@@ -38,7 +39,8 @@ def ws_send(message, sender=None):
 
     for ws in wss:
         if sender != ws:
-            ws.write_message(message)
+            ws.write_message(
+                tornado.escape.json_encode(message))
 
 
 
@@ -178,7 +180,10 @@ class FSEventHandler(FileSystemEventHandler):
 
         if not last or now - last > self.THRESHOLD:
             logging.info('firing event for {}'.format(src))
-            ws_send(src[len(self.root):])
+            ws_send({
+                'type'   : 'filechange',
+                'payload': src[len(self.root):]
+            })
             self.debounce[src] = now
 
 

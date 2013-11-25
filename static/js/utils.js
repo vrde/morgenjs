@@ -13,6 +13,10 @@
             load('__morgen_watchdog');
     };
 
+    morgen.broadcast = function (msg) {
+        __morgen.ws.send(JSON.stringify(msg));
+    };
+
 }) (window.morgen.load,
     window.morgen,
     window.__morgen);

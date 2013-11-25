@@ -32,7 +32,7 @@
     // Controller responsible to watch changes.
     // It creates and manage a websocket to the server.
     controller = function (c) {
-        var ws, log, onmessage;
+        var ws, log, onmessage, filechange;
 
         ws = new WebSocket('ws://' + window.location.host + '/ws');
 
@@ -43,8 +43,19 @@
 
         // React on a new message
         onmessage = function(evt) {
-            var filename = evt.data,
-                src      = filename,
+            var json = JSON.parse(evt.data);
+
+            console.log('[core] ws activity, got', json);
+
+            switch(json.type) {
+                case 'filechange':
+                    filechange(json.payload);
+                    break;
+            }
+        };
+
+        filechange = function(filename) {
+            var src      = filename,
                 attr     = src.match(/\.(js|html)$/) ? 'src' : 'href',
                 tag      = attr == 'src' ? 'script' : 'link',
                 elem     = document.querySelector('[' + attr + '^="' + src + '"]');
