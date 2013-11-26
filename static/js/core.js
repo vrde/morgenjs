@@ -92,7 +92,7 @@
 
                             // attach the event to the DOM element
                             objects[j].addEventListener(eventNames[k], callback);
-                            //console.log('[core] -- addEventListener', eventNames[k], objects[j]);
+                            console.log('[core] -- addEventListener', eventNames[k], objects[j]);
 
                             __morgen.totalListeners++;
                         } else {
@@ -100,7 +100,7 @@
                             if (listenerIndex != -1) {
                                 // remove the event to the DOM element
                                 objects[j].removeEventListener(eventNames[k], callback);
-                                //console.log('[core] -- removeEventListener', eventNames[k], objects[j]);
+                                console.log('[core] -- removeEventListener', eventNames[k], objects[j]);
 
                                 nodeListeners[eventNames[k]].splice(listenerIndex, 1);
                                 __morgen.totalListeners--;
@@ -244,14 +244,6 @@
                 });
             }
 
-            // if there are some old listeners already binded,
-            // remove them
-            if (ctx && ctx.element
-                    && ctx.element.__morgenContexts
-                    && ctx.element.__morgenContexts[ctx.name])
-                off(ctx.element.__morgenContexts[ctx.name]);
-
-
             // bind the new listeners
             addEvents(ctx);
 
@@ -311,7 +303,7 @@
         };
 
         // Remove the Node from the DOM.
-        remove = function (ctx) {
+        remove = function (ctx, empty) {
             var i, key, children;
 
             ctx = ctx || context;
@@ -324,7 +316,11 @@
                 for (key in children[i].__morgenContexts)
                     children[i].__morgenContexts[key].off();
 
-            ctx.element.remove();
+
+            if (empty)
+                ctx.element.innerHTML = '';
+            else
+                ctx.element.remove();
         };
 
         // Initialize the context.
@@ -389,6 +385,7 @@
 
         for (var key in __morgen.contexts[name]) {
             ctx = __morgen.contexts[name][key];
+            ctx.remove(ctx, true);
             morgen.load(name, ctx.element, ctx.extras);
             ctx.element.classList.add('__morgen-reload');
             reloaded.push(ctx.element);
