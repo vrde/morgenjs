@@ -6,6 +6,10 @@
 
     'use strict';
 
+    if (!('WebSocket' in window)) {
+        alert('Cannot run the demo, WebSockets are not supported, can you try a different browser?');
+        return;
+    }
 
     // Some nice variables.
     var reloadScript, controller;
