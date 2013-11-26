@@ -16,7 +16,7 @@
 
         while (meme = window.app.memes[i++]) {
             itemCtrl = morgen.create('item', meme);
-            c.$().appendChild(itemCtrl.element);
+            c.$('ul').appendChild(itemCtrl.element);
         }
 
     });
