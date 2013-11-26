@@ -18,3 +18,52 @@ li .meme {
     width: 128px;
     height: 128px;
 }
+
+li .wrapper {
+    position: relative;
+    width: 128px;
+    height: 128px;
+}
+
+li [data-model="votes"] {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 30px;
+    width: 100%;
+    text-align: center;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.do--push {
+    -webkit-animation: incrementAnim 0.25s;
+    -moz-animation: incrementAnim 0.25s;
+    animation: incrementAnim 0.25s;
+}   
+
+@-webkit-keyframes incrementAnim {         
+    50% { -webkit-transform: scale(0.8); } 
+}   
+@-moz-keyframes incrementAnim {            
+    50% { -moz-transform: scale(0.8); }    
+}   
+@keyframes incrementAnim {                 
+    50% { transform: scale(0.8); }         
+}                                          
+
+.do--update {
+    -webkit-animation: updateAnim 0.25s;
+    -moz-animation: updateAnim 0.25s;
+    animation: updateAnim 0.25s;
+}   
+
+@-webkit-keyframes updateAnim {         
+    50% { -webkit-transform: scale(1.2); } 
+}   
+@-moz-keyframes updateAnim {            
+    50% { -moz-transform: scale(1.2); }    
+}   
+@keyframes updateAnim {                 
+    50% { transform: scale(1.2); }         
+}                                          
+

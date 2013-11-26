@@ -20,7 +20,6 @@
         });
 
         window.app.votes[id]++;
-        morgen.dispatch('votesUpdate');
     };
 
     ns.app.updateVotes = function (vote) {
@@ -31,5 +30,7 @@
         ns.app.votes[vote.target]++;
         morgen.dispatch('votesUpdate');
     };
+
+    FastClick.attach(document.body);
 
 }) (window, window.morgen);
