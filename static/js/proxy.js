@@ -51,7 +51,10 @@
 
             toggleClass: function (className, v) {
                 proxy.each(function (elem) {
-                    elem.classList.toggle(className, v);
+                    if (v === undefined)
+                        elem.classList.toggle(className);
+                    else
+                        elem.classList.toggle(className, v);
                 });
 
                 return proxy;
