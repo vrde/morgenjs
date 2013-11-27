@@ -1,0 +1,29 @@
+body {
+    margin: 10px;
+    font-family: sans-serif;
+    color: #eee;
+    background-color: #111;
+}
+
+h1 {
+    font-size: 2em;
+    text-align: center;
+}
+
+#main {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+ul {
+    margin: 0 auto;
+    padding: 0;
+}
+
+li {
+    margin: 10px;
+}
+
+.done {
+    text-decoration: line-through;
+}

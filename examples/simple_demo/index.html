@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Morgen • DEMO</title>
+
+        {% raw morgen %}
+
+        <link rel="stylesheet" href="/{{root}}/css/normalize.css">
+        <link rel="stylesheet" href="/{{root}}/css/start.css">
+        <link rel="stylesheet" href="/{{root}}/css/app.css">
+	</head>
+	<body>
+        <div id="main"></div>
+
+        <!-- namespace -->
+        <script src="/{{root}}/js/app.js"></script>
+
+        <!-- templates -->
+        <script src="/{{root}}/templates/demo.html"></script>
+        <script src="/{{root}}/templates/item.html"></script>
+
+        <!-- controllers -->
+        <script src="/{{root}}/js/controllers/demo.js"></script>
+        <script src="/{{root}}/js/controllers/item.js"></script>
+
+        <!-- app -->
+        <script src="/{{root}}/js/run.js"></script>
+
+	</body>
+</html>
