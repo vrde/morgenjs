@@ -9,6 +9,12 @@ body {
     */
 }
 
+h1.hand {
+    font-size: 80px;
+    font-weight: bold;
+    text-align: left;
+}
+
 h1 {
     font-size: 1em;
     text-align: center;
@@ -30,4 +36,9 @@ li {
 
 .done {
     text-decoration: line-through;
+}
+
+
+.hide {
+    display: none;
 }
