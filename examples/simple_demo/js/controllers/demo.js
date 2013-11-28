@@ -4,17 +4,23 @@
 
     morgen.register('demo', function (c) {
 
-        var todo = ['eat a schnitzel',
-                    'say goodbye to Berlusconi',
-                    'buy some bitcoins',
-                    'learn German',
-                    'finish this demo'],
+        var todo = [
+                { label: 'eat a schnitzel', done: false },
+                /*
+                { label: 'say goodbye to Berlusconi', done: false },
+                { label: 'buy some bitcoins', done: false },
+                { label: 'learn German', done: false },
+                { label: 'finish this demo', done: false }
+                */
+            ],
+
+
             i, itemCtrl;
 
         c.render('demo');
 
         for (i = 0; i < todo.length; i++) {
-            itemCtrl = morgen.create('item', { item: todo[i] });
+            itemCtrl = morgen.create('item', todo[i]);
             c.$('ul').appendChild(itemCtrl.element);
         }
 

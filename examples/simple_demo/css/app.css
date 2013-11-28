@@ -2,11 +2,15 @@ body {
     margin: 10px;
     font-family: sans-serif;
     color: #eee;
+    background-color: tomato;
+
+    /*
     background-color: #111;
+    */
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 1em;
     text-align: center;
 }
 
