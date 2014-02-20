@@ -4,6 +4,8 @@ MorgenJS
 > MorgenJS is an experiment to find a new way to make apps.
 > MorgenJS explores a new field: reactive and responsive **development**.
 
+[Link to the presentation](https://speakerdeck.com/vrde/morgenjs)
+
 MorgenJS is a nice framework to build single page webapps.
 It is still extremely experimental, and the API is totally unstable, so don't rely on it. I just put it online to show the code to some interested people.
 
