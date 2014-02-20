@@ -40,7 +40,7 @@
                         elem.classList.remove(classTo);
                         elem.classList.add(classFrom);
                     } else {
-                        elem.classList.add(classFrom);
+                        elem.classList.add(classTo);
                     }
                 });
 
