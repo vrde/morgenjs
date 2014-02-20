@@ -6,12 +6,10 @@
 
         var todo = [
                 { label: 'eat a schnitzel', done: false },
-                /*
                 { label: 'say goodbye to Berlusconi', done: false },
                 { label: 'buy some bitcoins', done: false },
                 { label: 'learn German', done: false },
                 { label: 'finish this demo', done: false }
-                */
             ],
 
 

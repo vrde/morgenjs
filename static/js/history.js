@@ -18,15 +18,20 @@
             '_scope': document,
 
             'click': function (e) {
-                var attrs = e.target.attributes,
+                var node = e.target,
                     href;
 
-                if ('data-push' in attrs) {
-                    href = e.target.attributes.href.value;
-                    window.history.pushState({ href: href }, '', href);
-                    dispatch('route', { href: href });
+                while (node) {
+                    if (node.attributes && node.attributes['data-push']) {
+                        href = node.attributes['href'].value;
+                        window.history.pushState({ href: href }, '', href);
+                        dispatch('route', { href: href });
 
-                    e.preventDefault();
+                        e.preventDefault();
+                        return;
+                    }
+
+                    node = node.parentNode;
                 }
             }
         }];
