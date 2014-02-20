@@ -31,6 +31,22 @@
                 return proxy;
             },
 
+            swapClass: function (classFrom, classTo) {
+                proxy.each(function (elem) {
+                    if (elem.classList.contains(classFrom)) {
+                        elem.classList.remove(classFrom);
+                        elem.classList.add(classTo);
+                    } else if (elem.classList.contains(classTo)) {
+                        elem.classList.remove(classTo);
+                        elem.classList.add(classFrom);
+                    } else {
+                        elem.classList.add(classFrom);
+                    }
+                });
+
+                return proxy;
+            },
+
             addClass: function (className) {
                 proxy.each(function (elem) {
                     elem.classList.add(className);
