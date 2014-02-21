@@ -26,7 +26,7 @@ import tornado.web
 import tornado.log
 
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from watchdog.events import PatternMatchingEventHandler
 
 from docopt import docopt
 
@@ -167,10 +167,15 @@ def make_application(args):
     return application
 
 
-class FSEventHandler(FileSystemEventHandler):
+class FSEventHandler(PatternMatchingEventHandler):
     THRESHOLD = timedelta(seconds=0.5)
 
     def __init__(self, root):
+        super(FSEventHandler, self).__init__(
+            patterns=['*.html', '*.js', '*.css'],
+            ignore_patterns=['.git'],
+            ignore_directories=True)
+
         self.root = root
         self.debounce = {}
 
@@ -194,7 +199,7 @@ def start_watching(path='.'):
 
     test_handler = FSEventHandler(test_path)
     morgen_handler = FSEventHandler(morgen_path)
-    handler  = FSEventHandler(os.getcwd())
+    handler = FSEventHandler(os.getcwd())
 
     observer = Observer()
     observer.schedule(test_handler, test_path, recursive=True)
@@ -215,7 +220,7 @@ def run_server(application, args):
 
 
 def serve(args):
-    start_watching()
+    start_watching(args['--root'])
     app = make_application(args)
     run_server(app, args)
 
