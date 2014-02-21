@@ -162,8 +162,11 @@
         controller = __morgen.controllers[name];
 
 
-        if (!controller)
-            throw "`" + name + "`" + " is not registered in the morgen scope!";
+        if (!controller) {
+            var error = '"' + name + '"' + " is not a registered controller!";
+            console.error(error);
+            throw error;
+        }
 
 
         // Helper function to render a template against data

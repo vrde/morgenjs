@@ -26,6 +26,11 @@
 
     morgen.render = function (name, context, element) {
         var template = __morgen.templates[name];
+        if (!template) {
+            var error = '"' + name + '"' + " is not a registered template!";
+            console.error(error);
+            throw error;
+        }
         element.innerHTML = template(context);
     };
 
