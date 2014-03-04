@@ -8,6 +8,7 @@
     morgen.run = function (options) {
         load('__morgen_broadcast');
         load('__morgen_history');
+        load('__morgen_data_events');
 
         if (options.watch)
             load('__morgen_watchdog');
