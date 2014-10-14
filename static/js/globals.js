@@ -10,24 +10,35 @@
         // Global events are automatically added to every
         // controller. It's a cheap way to avoid binding
         // *live* events to the DOM.
-        events     : { },
+        events: { },
 
         // contain all the contexts in the current session
-        contexts   : { },
+        contexts: { },
 
         // contain all the controllers registered
         controllers: { },
 
 
         // store all the templates
-        templates  : { },
+        templates: { },
 
         // a map between templates and controllers
-        tmpl2ctrl  : { },
+        tmpl2ctrl: { },
+
+
+        // config dict for tweaking the main behaviour
+        // can be manipulated using utils.config
+        config: {
+            http: {
+                apiRoot: null,
+                withCredentials: false,
+                appendParams: {}
+            }
+        },
 
 
         // an int to generate uids
-        uid        : 0,
+        uid: 0,
 
         // listeners counter
         totalListeners: 0

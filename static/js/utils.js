@@ -8,6 +8,19 @@
         return query.join('&');
     }
 
+    function updateDict (src, dest) {
+        for (var key in src)
+            if (typeof(src[key]) == 'object')
+                updateDict(src[key], dest[key]);
+            else
+                dest[key] = src[key];
+    }
+
+
+    morgen.updateConfig = function (data) {
+        updateDict(data, __morgen.config);
+    };
+
 
     morgen.uid = function () {
         return __morgen.uid++;
@@ -33,12 +46,20 @@
         var xhr = new XMLHttpRequest(),
             contentType = method == 'get' ? 'text/plain' : 'application/x-www-form-urlencoded'
 
+        if (__morgen.config.http.apiRoot)
+            url = __morgen.config.http.apiRoot + url
+
+        if (__morgen.config.http.appendParams)
+            url = [url, encodeData(__morgen.config.http.appendParams)].join(url.indexOf('?') == -1 ? '?' : '&');
+
         xhr.open(method, url, true);
+        xhr.withCredentials = __morgen.config.http.withCredentials;
+        xhr.setRequestHeader('Accept', 'application/json');
         xhr.setRequestHeader('Content-Type', contentType + ';charset=UTF-8');
         xhr.onreadystatechange = function() {
             if (xhr.readyState == XMLHttpRequest.DONE) {
                 if (xhr.status == 200 || xhr.status === 0)
-                    success && success(xhr.responseText);
+                    success && success(JSON.parse(xhr.responseText));
                 else
                     error && error();
             }
@@ -58,11 +79,24 @@
 
 
     morgen.httpGet = function (url, data, success, error) {
-        return morgen.httpSend('get', url + '?' + encodeData(data), null, success, error);
+        // FIXME: this is a bit shitty
+        if (typeof(data) == 'function') {
+            error = success;
+            success = data;
+        }
+        if (data) {
+            url = url + '?' + encodeData(data)
+        }
+        return morgen.httpSend('get', url, null, success, error);
     }
 
 
     morgen.httpPost = function (url, data, success, error) {
+        // FIXME: this is a bit shitty
+        if (typeof(data) == 'function') {
+            error = success;
+            success = data;
+        }
         return morgen.httpSend('post', url, data instanceof FormData ? data : encodeData(data), success, error);
     }
 
