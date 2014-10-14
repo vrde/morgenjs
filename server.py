@@ -188,7 +188,7 @@ class FSEventHandler(PatternMatchingEventHandler):
             logging.info('firing event for {}'.format(src))
             ws_send({
                 'type'   : 'filechange',
-                'payload': src[len(self.root):]
+                'payload': '/' + src
             })
             self.debounce[src] = now
 
