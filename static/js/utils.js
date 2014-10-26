@@ -132,6 +132,18 @@
               document.cookie = [name, '=', encodeURIComponent(JSON.stringify(value)), '; path=/', '; max-age=', 60*60*24*365].join('');
         }
     };
+
+
+    morgen.historyPush = function (href) {
+        window.history.pushState({ href: href }, '', href);
+        morgen.dispatch('route', { href: href });
+    };
+
+    morgen.historyReplace= function (href) {
+        window.history.replaceState({ href: href }, '', href);
+        morgen.dispatch('route', { href: href });
+    };
+
 }) (window.morgen.load,
     window.morgen,
     window.__morgen);
