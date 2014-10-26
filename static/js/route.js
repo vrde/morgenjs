@@ -25,7 +25,7 @@
         // E.g. from "post/:date/:id" to a function able to match
         // strings with the same pattern.
         createRule = function (rule) {
-            var re = new RegExp('^' + rule.replace(/:\w+/g, '(\\w+)') + '$', 'g');
+            var re = new RegExp('^' + rule.replace(/:\w+/g, '([^\\/]+)') + '$', 'g');
 
             return function (path) {
                 var tokens = path.split('?'),
