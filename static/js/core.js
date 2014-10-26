@@ -145,8 +145,9 @@
     //
     morgen.load = function (name, selector, extras) {
         var context, element, controller,
-            on, off, getValue, setValue, proxy,
-            remove, innerRender, innerQuerySelector, innerQuerySelectorAll,
+            on, off, getValue, setValue, getMultipleValues, setMultipleValues,
+            proxy, remove, innerRender,
+            innerQuerySelector, innerQuerySelectorAll,
             unwrap;
 
         if (selector === undefined)
@@ -279,10 +280,31 @@
             removeEvents(ctx);
         };
 
+        getMultipleValues = function () {
+            var elems = context.element.querySelectorAll(':not([morgen-has-context]) [data-model]'),
+                data = {}, key;
+
+            for (var i = 0; i < elems.length; i++) {
+                key = elems[i].getAttribute('data-model');
+                data[key] = getValue(key);
+            }
+
+            return data;
+        };
+
+        setMultipleValues = function (data) {
+            for (var k in data)
+                setValue(k, data[k]);
+        };
+
         setValue = function (modelName, value) {
             // Avoid all the sub contexts
-            var elems    = context.element.querySelectorAll(':not([morgen-has-context]) [data-model="' + modelName + '"]'),
-                oldValue = getValue(modelName),
+            var elems = context.element.querySelectorAll(':not([morgen-has-context]) [data-model="' + modelName + '"]');
+
+            if (elems.length == 0)
+                return;
+
+            var oldValue = getValue(modelName),
                 newValue = typeof value == "function" ? value(oldValue) : value,
                 i, tag, prop, elem;
 
@@ -297,8 +319,12 @@
 
         getValue = function (modelName) {
             // Avoid all the sub contexts
-            var elem = context.element.querySelector(':not([morgen-has-context]) [data-model="' + modelName + '"]'),
-                tag  = elem.tagName.toLowerCase(),
+            var elem = context.element.querySelector(':not([morgen-has-context]) input[data-model="' + modelName + '"],' +
+                                                     ':not([morgen-has-context]) textarea[data-model="' + modelName + '"]');
+            if (!elem)
+                return;
+
+            var tag  = elem.tagName.toLowerCase(),
                 prop = tag == 'input' ? 'value' : 'textContent';
 
             if (elem)
@@ -339,6 +365,9 @@
 
             set    : setValue,
             get    : getValue,
+
+            mset   : setMultipleValues,
+            mget   : getMultipleValues,
 
             remove : remove,
             extras : extras,
@@ -401,23 +430,35 @@
     };
 
 
-    morgen.remove = function (selector) {
+    morgen.remove = function (selector, empty) {
         var elements = typeof selector == 'string' ? document.querySelector(selector) : selector,
-            contexts, i, key;
+            contexts, i, j, key, children;
 
         if (!(elements instanceof Array))
             elements = [elements];
 
         for (i = 0; i < elements.length; i++) {
+
+            children = elements[i].querySelectorAll('[morgen-has-context]');
+            for (j = 0; j < children.length; j++)
+                for (key in children[i].__morgenContexts)
+                    children[i].__morgenContexts[key].off();
+
             contexts = elements[i].__morgenContexts;
 
             for (key in contexts)
                 contexts[key].off();
 
-            if (elements[i].parentNode)
-                elements[i].parentNode.removeChild(elements[i]);
-        }
+            if (empty)
+                elements[i].innerHTML = '';
+            else
+                elements[i].remove();
 
+        }
+    };
+
+    morgen.empty = function (selector) {
+        morgen.remove(selector, true);
     };
 
 

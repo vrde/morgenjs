@@ -12,7 +12,7 @@
             registerTemplate('t_cu_test', [
                 '<div>',
                 '    <span data-model="foo">123</span>',
-                '    <input data-model="foo" value="123" />',
+                '    <input data-model="foo" value="567" />',
                 '    <input data-model="bar" value="abc" />',
                 '    <textarea data-model="baz">stella</textarea>',
                 '</div>'].join(''));
@@ -23,7 +23,7 @@
 
             c = create('cu_test');
 
-            expect(c.get('foo')).toBe('123');
+            expect(c.get('foo')).toBe('567');
             expect(c.get('bar')).toBe('abc');
             expect(c.get('baz')).toBe('stella');
 
