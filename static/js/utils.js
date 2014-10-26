@@ -112,6 +112,26 @@
         return morgen.httpSend('post', url, data instanceof FormData ? data : encodeData(data), success, error);
     };
 
+
+    morgen.cookie = function (name, value) {
+        // thanks to:
+        //  - http://stackoverflow.com/a/11344672/597097
+        //  - https://developer.mozilla.org/en-US/docs/Web/API/document.cookie
+
+        // read cookie
+        if (value === undefined) {
+            var result = document.cookie.match(new RegExp(name + '=([^;]+)'));
+            return result === null ? undefined : JSON.parse(decodeURIComponent(result[1]));
+        }
+        // delete cookie
+        else if (value === null) {
+              document.cookie = [name, '=; expires=Thu, 01-Jan-1970 00:00:01 GMT;'].join('');
+        }
+        // write cookie
+        else {
+              document.cookie = [name, '=', encodeURIComponent(JSON.stringify(value)), '; path=/', '; max-age=', 60*60*24*365].join('');
+        }
+    };
 }) (window.morgen.load,
     window.morgen,
     window.__morgen);
