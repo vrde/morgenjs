@@ -311,6 +311,7 @@
             for (i = 0, elem = elems[0]; elem; elem = elems[++i]) {
                 tag  = elem.tagName.toLowerCase(),
                 prop = tag == 'input' ? 'value' : 'textContent';
+                // elem.setAttribute('data-model-json', JSON.stringify(value));
                 elem[prop] = newValue;
             }
 
