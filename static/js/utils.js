@@ -16,6 +16,16 @@
                 dest[key] = src[key];
     }
 
+    function isEmpty(obj) {
+        if (!obj)
+            return false;
+
+        for (var prop in obj)
+            if (obj.hasOwnProperty(prop)) return false;
+
+        return true;
+    }
+
 
     morgen.updateConfig = function (data) {
         updateDict(data, __morgen.config);
@@ -49,7 +59,7 @@
         if (__morgen.config.http.apiRoot)
             url = __morgen.config.http.apiRoot + url
 
-        if (__morgen.config.http.appendParams)
+        if (!isEmpty(__morgen.config.http.appendParams))
             url = [url, encodeData(__morgen.config.http.appendParams)].join(url.indexOf('?') == -1 ? '?' : '&');
 
         xhr.open(method, url, true);
@@ -83,12 +93,13 @@
         if (typeof(data) == 'function') {
             error = success;
             success = data;
+            data = null;
         }
         if (data) {
             url = url + '?' + encodeData(data)
         }
         return morgen.httpSend('get', url, null, success, error);
-    }
+    };
 
 
     morgen.httpPost = function (url, data, success, error) {
@@ -96,9 +107,10 @@
         if (typeof(data) == 'function') {
             error = success;
             success = data;
+            data = null;
         }
         return morgen.httpSend('post', url, data instanceof FormData ? data : encodeData(data), success, error);
-    }
+    };
 
 }) (window.morgen.load,
     window.morgen,
