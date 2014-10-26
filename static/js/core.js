@@ -281,7 +281,8 @@
         };
 
         getMultipleValues = function () {
-            var elems = context.element.querySelectorAll(':not([morgen-has-context]) [data-model]'),
+            var elems = context.element.querySelectorAll(':not([morgen-has-context]) input[data-model],' +
+                                                         ':not([morgen-has-context]) textarea[data-model]'),
                 data = {}, key;
 
             for (var i = 0; i < elems.length; i++) {
