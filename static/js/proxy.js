@@ -23,6 +23,17 @@
                 return proxy.array[i];
             },
 
+            prependChild: function (child) {
+                proxy.each(function (elem) {
+                    if (elem.firstChild)
+                        elem.insertBefore(child, elem.firstChild);
+                    else
+                        elem.appendChild(child);
+                });
+
+                return proxy;
+            },
+
             appendChild: function (child) {
                 proxy.each(function (elem) {
                     elem.appendChild(child);
