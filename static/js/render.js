@@ -32,6 +32,7 @@
             throw error;
         }
         element.innerHTML = template(context);
+        return element;
     };
 
 }) (window.morgen,

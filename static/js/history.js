@@ -3,7 +3,7 @@
     // Register a new controller to manage the History API.
     register('__morgen_history', function (c) {
 
-        var pathname = window.location.pathname;
+        var path = window.location.pathname + window.location.search;
 
         c.events = [{
             '_scope': window,
@@ -40,7 +40,7 @@
         // window.history.replaceState({ href: pathname }, '', pathname);
 
         // Push current route
-        dispatch('route', { href: pathname });
+        dispatch('route', { href: path });
     });
 
 }) (window.morgen.register,
