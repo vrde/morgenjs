@@ -107,7 +107,7 @@ class MainHandler(tornado.web.RequestHandler):
 class TemplateHandler(tornado.web.RequestHandler):
     """Encapsulate a template into a javascript structure."""
 
-    TMPL = u'morgen.registerTemplate("%s", "%s");'
+    TMPL = u'morgen.template("%s", "%s");'
 
 
     def initialize(self, root):
